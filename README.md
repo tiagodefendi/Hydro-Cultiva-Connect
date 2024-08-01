@@ -108,13 +108,16 @@ docker-compose down
 
 #### Envolvidos
 
-Tiago Defendi da Silva (Owner)
-Artur Bento de Carvalho
-Thiago Riemma Carbonera
-
-
-##### 📫 Contact links
-
+Tiago Defendi da Silva (Owner) - 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tiagodefendi/)
 [![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:tiagodefendidasilva@gmail.com)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/tiago_defendi/)
+
+Artur Bento de Carvalho - 
+[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:arturbento@alunos.utfpr.edu.br)
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/arturbent0/)
+
+Thiago Riemma Carbonera - 
+[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:)
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/thiagoriemma/)
+
