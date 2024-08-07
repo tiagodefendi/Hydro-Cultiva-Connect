@@ -1,0 +1,3 @@
+Django==4.2  # Versão do Django que você está usando
+mysqlclient==2.1.1  # Adaptador MySQL para Django
+django-environ==0.9.0  # Gerenciamento de variáveis de ambiente
