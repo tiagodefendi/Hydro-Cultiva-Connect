@@ -13,29 +13,45 @@
 </head>
 
 <body>
+
+    <!-- TODO: improve page -->
     <div class="container mt-5">
-        <h2 class="text-center">Cadastro</h2>
+        <h2 class="text-center display-4 text-primary">Sign-up</h2>
+
         <form>
-            <div class="form-group">
-                <label for="name">Nome</label>
-                <input type="text" class="form-control" id="name" placeholder="Digite seu nome">
+            <div class="mb-3"> <!-- name -->
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Type your name">
             </div>
-            <div class="form-group">
+
+            <div class="mb-3"> <!-- email -->
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Digite seu email">
+                <input type="email" class="form-control" id="email" placeholder="Type your email">
+                <div id="emailHelp" class="form-text user-select-none">We'll never share your email with anyone else</div>
             </div>
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" class="form-control" id="password" placeholder="Digite sua senha">
+
+            <div class="mb-3"> <!-- password-->
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Type your password">
             </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirmar Senha</label>
-                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirme sua senha">
+
+            <div class="mb-3"> <!-- confirm password -->
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm yor password">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+
+            <div class="mb-3"> <!-- checkbox -->
+                <input type="checkbox" class="form-check-input" id="Terms and Conditions">
+                <label class="form-check-label" for="Terms and Conditions">I agree to the terms and conditions</label>
+            </div>
+
+            <div class="mb-3"> <!-- buttons -->
+                <button type="submit" class="btn btn-primary">Sign-up</button>
+                <button type="submit" class="btn btn-outline-danger">Cancel</button>
+            </div>
         </form>
     </div>
-    
+
     <!-- Incluindo o JavaScript do Bootstrap via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
