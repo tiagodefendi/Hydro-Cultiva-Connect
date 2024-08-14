@@ -22,17 +22,17 @@
         <form>
             <div class="mb-3"> <!-- email -->
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Type your email">
+                <input type="email" class="form-control" id="email" placeholder="Type your email" required>
             </div>
 
             <div class="mb-3"> <!-- password-->
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Type your password">
+                <input type="password" class="form-control" id="password" placeholder="Type your password" required>
             </div>
 
             <div class="mb-3"> <!-- buttons -->
                 <button type="submit" class="btn btn-primary">Login</button>
-                <button type="submit" class="btn btn-outline-danger">Cancel</button>
+                <a class="btn btn-outline-danger" href="javascript:history.back()">Cancel</a>
             </div>
         </form>
     </div>

@@ -21,33 +21,33 @@
         <form>
             <div class="mb-3"> <!-- name -->
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Type your name">
+                <input type="text" class="form-control" id="name" placeholder="Type your name" required>
             </div>
 
             <div class="mb-3"> <!-- email -->
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Type your email">
+                <input type="email" class="form-control" id="email" placeholder="Type your email" required>
                 <div id="emailHelp" class="form-text user-select-none">We'll never share your email with anyone else</div>
             </div>
 
             <div class="mb-3"> <!-- password-->
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Type your password">
+                <input type="password" class="form-control" id="password" placeholder="Type your password" required>
             </div>
 
             <div class="mb-3"> <!-- confirm password -->
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm yor password">
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm yor password" required>
             </div>
 
             <div class="mb-3"> <!-- checkbox -->
-                <input type="checkbox" class="form-check-input" id="Terms and Conditions">
-                <label class="form-check-label" for="Terms and Conditions">I agree to the terms and conditions</label>
+                <input type="checkbox" class="form-check-input" id="Terms and Conditions" required>
+                <label class="form-check-label" for="Terms and Conditions">I agree to the <a href="https://assets.pubpub.org/d8wct41f/31611263538139.pdf" target="_blank">terms and conditions</a></label>
             </div>
 
             <div class="mb-3"> <!-- buttons -->
                 <button type="submit" class="btn btn-primary">Sign-up</button>
-                <button type="submit" class="btn btn-outline-danger">Cancel</button>
+                <a class="btn btn-outline-danger" href="javascript:history.back()">Cancel</a>
             </div>
         </form>
     </div>
