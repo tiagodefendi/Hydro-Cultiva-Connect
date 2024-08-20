@@ -10,6 +10,7 @@
 
     <!-- Title -->
     <title>Sign-up Page</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
 </head>
 
 <body>
@@ -33,6 +34,7 @@
             <div class="mb-3"> <!-- password-->
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" placeholder="Type your password" required>
+                <div id="passowrdlHelp" class="form-text user-select-none">Your password will need hava </div>
             </div>
 
             <div class="mb-3"> <!-- confirm password -->
@@ -50,6 +52,9 @@
                 <a class="btn btn-outline-danger" href="javascript:history.back()">Cancel</a>
             </div>
         </form>
+        <div>
+            <span class="mb-3">Already have an account? <a href="/login">Login</a></span>
+        </div>
     </div>
 
     <!-- Incluindo o JavaScript do Bootstrap via CDN -->
