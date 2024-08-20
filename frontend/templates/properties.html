@@ -28,16 +28,18 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id="map">
     <script>
         var map = L.map('map').setView([-24.060323738345705, -52.38698536119834], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: 'Hidro Cultiva C0nnect'
+            attribution: 'Hidro Cultiva Connect'
         }).addTo(map);
         L.marker([-24.060323738345705, -52.38698536119834]).addTo(map)
-            .bindPopup('<b>UTFPR-CM</b><br>Campo Mourão')
+            .bindPopup('<b>UTFPR-CM</b></br>Campo Mourão')
             .openPopup();
     </script>
+    </div>
+
 </body>
 </html>
