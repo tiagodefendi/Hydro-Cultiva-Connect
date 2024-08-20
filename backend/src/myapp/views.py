@@ -18,6 +18,13 @@ def properties(request):
 
 # TODO: register new user
 def signup(request):
+    if request.method == 'POST':
+        name: str = request.POST.get('name')
+        email: str = request.POST.get('email')
+        password: str = request.POST.get('password')
+        confirm_password: str = request.POST.get('confirm_password')
+
+        print(name, '-', email, ':', password, confirm_password, '=?', confirm_password==password)
     return render(request, 'signup.html')
 
 # TODO: make login logical
