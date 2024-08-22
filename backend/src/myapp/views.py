@@ -5,12 +5,11 @@ from django.contrib.auth import authenticate, login as auth_login
 
 def add_device(request):
     if request.method == 'POST':
-        id = 1
         type = request.POST.get('type')
         name = request.POST.get('name')
         key = request.POST.get('key')
 
-        print(f'{type}-{id}: {name} = {key}')
+        print(f'{name}: {type} = {key}')
     return render(request, 'add_device.html')
 
 def add_property(request):
@@ -21,7 +20,7 @@ def properties(request):
 
 #TODO: verify SQL injections
 def signup(request):
-    if request.method == 'POST':
+    if request.method == 'POST': #getting forms information
         first_name: str = request.POST.get('first_name')
         last_name: str = request.POST.get('last_name')
         username: str = request.POST.get('username')
@@ -29,17 +28,17 @@ def signup(request):
         password: str = request.POST.get('password')
         confirm_password: str = request.POST.get('confirm_password')
 
-        print(f"{first_name} {last_name} - {username}: {email} - {password}")
+        print(f"{first_name} {last_name} - {username}: {email} - {password}") # log request signup on terminal
 
-        if password == confirm_password:
-            if User.objects.filter(username=username).exists():
+        if password == confirm_password: # verify if password is equal confirm_password and continue
+            if User.objects.filter(username=username).exists(): # verify if this username is already in use
                     return render(request, 'signup.html', {'error': 'Username already in use'})
 
-            if User.objects.filter(email=email).exists():
+            if User.objects.filter(email=email).exists(): # verify if this email is already in use
                     return render(request, 'signup.html', {'error': 'E-mail already in useo'})
 
             try:
-                user:User = User.objects.create_user(
+                user:User = User.objects.create_user( # create user object
                     first_name = first_name,
                     last_name= last_name,
                     username=username,
@@ -47,13 +46,13 @@ def signup(request):
                     password=password
                     )
 
-                user.save()
+                user.save() # insert new user in database
 
-                return redirect('login')
+                return redirect('login') # go to login page
             except Exception as e:
-                return render(request, 'signup.html', {'error': f'{e}'})
+                return render(request, 'signup.html', {'error': f'{e}'}) # up error in page
         else:
-            return render(request, 'signup.html', {'error': 'Passwords don\'t match'})
+            return render(request, 'signup.html', {'error': 'Passwords don\'t match'}) # password don't match
 
 
     return render(request, 'signup.html')
