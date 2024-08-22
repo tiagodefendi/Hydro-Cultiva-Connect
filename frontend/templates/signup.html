@@ -19,6 +19,12 @@
     <div class="container mt-5">
         <h2 class="text-center display-4 text-primary">Sign-up</h2>
 
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
             <div class="mb-3"> <!-- name -->
