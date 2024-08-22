@@ -22,12 +22,14 @@ def properties(request):
 #TODO: verify SQL injections
 def signup(request):
     if request.method == 'POST':
+        first_name: str = request.POST.get('first_name')
+        last_name: str = request.POST.get('last_name')
         username: str = request.POST.get('username')
         email: str = request.POST.get('email')
         password: str = request.POST.get('password')
         confirm_password: str = request.POST.get('confirm_password')
 
-        print(username, '-', email, ':', password, confirm_password, '=?', confirm_password==password)
+        print(f"{first_name} {last_name} - {username}: {email} - {password}")
 
         if password == confirm_password:
             if User.objects.filter(username=username).exists():
@@ -37,7 +39,14 @@ def signup(request):
                     return render(request, 'signup.html', {'error': 'E-mail already in useo'})
 
             try:
-                user:User = User.objects.create_user(username=username, email=email, password=password)
+                user:User = User.objects.create_user(
+                    first_name = first_name,
+                    last_name= last_name,
+                    username=username,
+                    email=email,
+                    password=password
+                    )
+
                 user.save()
 
                 return redirect('login')

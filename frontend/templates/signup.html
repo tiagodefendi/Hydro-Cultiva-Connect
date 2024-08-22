@@ -28,7 +28,17 @@
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
 
-            <div class="mb-3"> <!-- name -->
+            <div class="mb-3"> <!-- first name -->
+                <label for="first_name">Fist name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Type your first name" required>
+            </div>
+
+            <div class="mb-3"> <!-- last name -->
+                <label for="last_name">Last name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Type your last name" required>
+            </div>
+
+            <div class="mb-3"> <!-- username -->
                 <label for="username">Username</label>
                 <input type="username" class="form-control" id="username" name="username" placeholder="Type your username" required>
             </div>
