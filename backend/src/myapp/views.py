@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login as auth_login
 
 
 def add_device(request):
@@ -22,7 +22,7 @@ def properties(request):
 #TODO: verify SQL injections
 def signup(request):
     if request.method == 'POST':
-        username: str = request.POST.get('name')
+        username: str = request.POST.get('username')
         email: str = request.POST.get('email')
         password: str = request.POST.get('password')
         confirm_password: str = request.POST.get('confirm_password')
@@ -31,26 +31,40 @@ def signup(request):
 
         if password == confirm_password:
             if User.objects.filter(username=username).exists():
-                    return render(request, 'signup.html', {'error': 'Nome de usuário já existe'})
+                    return render(request, 'signup.html', {'error': 'Username already in use'})
 
             if User.objects.filter(email=email).exists():
-                    return render(request, 'signup.html', {'error': 'E-mail já está em uso'})
+                    return render(request, 'signup.html', {'error': 'E-mail already in useo'})
 
             try:
                 user:User = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
 
                 return redirect('login')
-            except:
-                return render(request, 'signup.html', {'error': 'Usuário já existe'})
+            except Exception as e:
+                return render(request, 'signup.html', {'error': f'{e}'})
         else:
-            return render(request, 'signup.html', {'error': 'As senhas não coincidem'})
+            return render(request, 'signup.html', {'error': 'Passwords don\'t match'})
 
 
     return render(request, 'signup.html')
 
 # TODO: make login logical
 def login(request):
+    if request.method == 'POST':
+        username: str = request.POST.get('username')
+        password: str = request.POST.get('password')
+
+        try:
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                auth_login(request, user)
+                return redirect('home')
+        except:
+            return render(request, 'login.html', {'error': 'Username or password wrong'})
+
+
     return render(request, 'login.html')
 
 def home(request):

@@ -27,9 +27,10 @@
 
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
+
             <div class="mb-3"> <!-- name -->
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Type your name" required>
+                <label for="username">Username</label>
+                <input type="username" class="form-control" id="username" name="username" placeholder="Type your username" required>
             </div>
 
             <div class="mb-3"> <!-- email -->
