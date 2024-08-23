@@ -20,9 +20,9 @@
     <div class="container mt-5">
         <h2 class="text-center display-4 text-primary">Login</h2>
 
-        {% if form.errors %}
+        {% if error %}
             <div class="alert alert-danger">
-                Usuário ou senha inválidos.
+                {{ error }}
             </div>
         {% endif %}
 
