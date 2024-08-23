@@ -19,20 +19,33 @@
     <div class="container mt-5">
         <h2 class="text-center display-4 text-primary">Add Property</h2>
 
-        <form>
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'add_property' %}">
+            {% csrf_token %}
+
             <div class="mb-3"> <!-- name -->
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Type this property name" required>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Type this property name" required>
             </div>
 
-            <div class="mb-3"> <!-- email -->
-                <label for="town">Town</label>
-                <input type="town" class="form-control" id="town" placeholder="Type this property town" required>
+            <div class="mb-3"> <!-- description -->
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Type this property description">
             </div>
 
-            <div class="mb-3"> <!-- email -->
-                <label for="UF">UF</label>
-                <input type="uf" class="form-control" id="uf" placeholder="Type this property uf" required>
+            <div class="mb-3"> <!-- latitude -->
+                <label for="latitude">Latitude</label>
+                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Type this property latitude" required>
+            </div>
+            
+            <div class="mb-3"> <!-- longitude -->
+                <label for="longitude">Longitude</label>
+                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Type this property longitude" required>
             </div>
 
             <div class="mb-3"> <!-- buttons -->

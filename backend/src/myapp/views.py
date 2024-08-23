@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from myapp.models import Property, Devices
 
+import re
+COORD_PATTERN = r'^-?[\d]+\.[\d]+$'
+KEY_PATTERN = r'^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$'
 
 def add_device(request):
     if request.method == 'POST':
@@ -12,11 +17,69 @@ def add_device(request):
         print(f'{name}: {type} = {key}')
     return render(request, 'add_device.html')
 
+@login_required(login_url='login')
 def add_property(request):
+    if request.method == 'POST':
+        name: str = request.POST.get('name')
+        description: str = request.POST.get('description')
+        latitude: str = request.POST.get('latitude')
+        longitude: str = request.POST.get('longitude')
+
+        print(f'{name} C({latitude}, {longitude}) - {description}')
+
+        if re.match(KEY_PATTERN, latitude):
+            latitude: float = float(latitude)
+        else:
+            return render(request, {'error': 'Invalid latitude coordinate'})
+        if re.match(KEY_PATTERN, longitude):
+            longitude: float = float(longitude)
+        else:
+            return render(request, {'error': 'Invalid longitude coordinate'})
+
+        try:
+            property = Property(
+                name=name,
+                description=description,
+                latitude=latitude,
+                longitude=longitude,
+                user=request.user  # authenticated user
+            )
+
+            property.save()
+        except:
+            return render(request, {'error': 'Something wrong happening'})
+
+
     return render(request, 'add_property.html')
 
+@login_required(login_url='login')
 def properties(request):
     return render(request, 'properties.html')
+
+@login_required(login_url='login')
+def logout(request):
+    auth_logout(request) #desloga o usuário
+
+    return redirect('login')
+
+# General/No login required --------------------------------------------------------------
+
+def login(request):
+    if request.method == 'POST':
+        username: str = request.POST.get('username')
+        password: str = request.POST.get('password')
+
+        try:
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                auth_login(request, user)
+                return redirect('home')
+        except:
+            return render(request, 'login.html', {'error': 'Username or password wrong'})
+
+
+    return render(request, 'login.html')
 
 #TODO: verify SQL injections
 def signup(request):
@@ -56,24 +119,6 @@ def signup(request):
 
 
     return render(request, 'signup.html')
-
-# TODO: make login logical
-def login(request):
-    if request.method == 'POST':
-        username: str = request.POST.get('username')
-        password: str = request.POST.get('password')
-
-        try:
-            user = authenticate(request, username=username, password=password)
-
-            if user is not None:
-                auth_login(request, user)
-                return redirect('home')
-        except:
-            return render(request, 'login.html', {'error': 'Username or password wrong'})
-
-
-    return render(request, 'login.html')
 
 def home(request):
 
