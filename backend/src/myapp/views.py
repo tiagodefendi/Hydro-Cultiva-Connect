@@ -27,14 +27,14 @@ def add_property(request):
 
         print(f'{name} C({latitude}, {longitude}) - {description}')
 
-        if re.match(KEY_PATTERN, latitude):
+        if re.match(COORD_PATTERN, latitude):
             latitude: float = float(latitude)
         else:
-            return render(request, {'error': 'Invalid latitude coordinate'})
-        if re.match(KEY_PATTERN, longitude):
+            return render(request, 'add_property.html', {'error': 'Invalid latitude coordinate'})
+        if re.match(COORD_PATTERN, longitude):
             longitude: float = float(longitude)
         else:
-            return render(request, {'error': 'Invalid longitude coordinate'})
+            return render(request, 'add_property.html', {'error': 'Invalid longitude coordinate'})
 
         try:
             property = Property(
@@ -47,7 +47,7 @@ def add_property(request):
 
             property.save()
         except:
-            return render(request, {'error': 'Something wrong happening'})
+            return render(request, 'add_property.html', {'error': 'Something wrong happened'})
 
 
     return render(request, 'add_property.html')
@@ -75,6 +75,8 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 return redirect('home')
+            else:
+                return render(request, 'login.html', {'error': 'User is not registered'})
         except:
             return render(request, 'login.html', {'error': 'Username or password wrong'})
 
