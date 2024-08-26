@@ -1,13 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from myapp.models import Property, Devices
 
+# Regex -------------------------------------------------------------------------------------------------------
 import re
 COORD_PATTERN = r'^-?[\d]+\.[\d]+$'
 KEY_PATTERN = r'^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$'
 
+# Views ------------------------------------------------------------------------------------------------------
+@login_required(login_url='login')
 def add_device(request):
     if request.method == 'POST':
         type = request.POST.get('type')
@@ -16,6 +19,16 @@ def add_device(request):
 
         print(f'{name}: {type} = {key}')
     return render(request, 'add_device.html')
+# Properties ->
+@login_required(login_url='login')
+def property(request, id: int):
+    property: Property = get_object_or_404(Property, id= id)
+
+    return render(request, 'property.html', {'property': property})
+
+@login_required(login_url='login')
+def properties(request):
+    return render(request, 'properties.html')
 
 @login_required(login_url='login')
 def add_property(request):
@@ -52,9 +65,12 @@ def add_property(request):
 
     return render(request, 'add_property.html')
 
+# User ->
 @login_required(login_url='login')
-def properties(request):
-    return render(request, 'properties.html')
+def profile(request, username: str):
+    user: User = get_object_or_404(User, username= username)
+
+    return render(request, 'profile.html', {'user': user})
 
 @login_required(login_url='login')
 def logout(request):
