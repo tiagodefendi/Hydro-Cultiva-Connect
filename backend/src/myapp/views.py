@@ -160,6 +160,7 @@ def signup(request):
     return render(request, 'signup.html')
 
 def home(request):
-
-
-    return render(request, 'index.html')
+    if request.user.is_authenticated:
+        return render(request, 'index.html', {'username': request.user.username})
+    else:
+        return render(request, 'index-nl.html')
