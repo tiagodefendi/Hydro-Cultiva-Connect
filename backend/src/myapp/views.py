@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from myapp.models import Property, Devices
+from django.http import HttpResponse
+from django.template import loader
+import json
 
 # Regex -------------------------------------------------------------------------------------------------------
 import re
@@ -32,7 +35,21 @@ def property(request, id: int):
 
 @login_required(login_url='login')
 def properties(request):
-    return render(request, 'properties.html')
+    properties = Property.objects.filter(user=request.user)
+    properties_data = [
+        {
+            'latitude': property.latitude,
+            'longitude': property.longitude,
+            'id': property.id,
+            'name': property.name,
+            'description': property.description
+        }
+        for property in properties
+    ]
+    properties_json = json.dumps(properties_data)
+    template = loader.get_template('properties.html')
+    context = {'properties_json': properties_json}
+    return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login')
 def add_property(request):

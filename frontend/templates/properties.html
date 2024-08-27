@@ -11,6 +11,7 @@
     <title>HCC - Properties</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
 
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin=""></script>
 
@@ -28,18 +29,52 @@
 </head>
 
 <body>
-    <div id="map">
+    <div id="map"></div>
+
     <script>
-        var map = L.map('map').setView([-24.060323738345705, -52.38698536119834], 13);
+        // Inicializa o mapa
+        var map = L.map('map');
+
+        // Adiciona marcadores para cada propriedade
+        var properties = JSON.parse('{{ properties_json|escapejs }}');  // Converte o JSON para objeto JavaScript
+
+        // Calcular o centro do mapa
+        var latitudes = properties.map(property => property.latitude);
+        var longitudes = properties.map(property => property.longitude);
+        var centerLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
+        var centerLon = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
+
+        // Adicionar marcadores e calcular limites
+        var bounds = L.latLngBounds();
+        properties.forEach(function(property) {
+            L.marker([property.latitude, property.longitude], {
+                icon: L.icon({
+                    iconUrl: 'https://www.svgrepo.com/show/235481/greenhouse.svg', // URL do ícone do marcador
+                    iconSize: [32, 32], // Tamanho do ícone
+                    iconAnchor: [16, 32], // Ancoragem do ícone
+                    popupAnchor: [0, -32] // Âncora do popup
+                })
+            }).addTo(map)
+            .bindPopup(
+                '<b>' + property.name + '</b><br>' +
+                property.description + '<br>' +
+                '<a href="/' + property.id + '">Ver detalhes</a>');
+
+            // Adiciona cada local ao limite
+            bounds.extend([property.latitude, property.longitude]);
+        });
+
+        // Define o centro e o zoom do mapa
+        map.fitBounds(bounds);
+
+        // Adiciona a camada base
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: 'Hidro Cultiva Connect'
         }).addTo(map);
-        L.marker([-24.060323738345705, -52.38698536119834]).addTo(map)
-            .bindPopup('<b>UTFPR-CM</b></br>Campo Mourão')
-            .openPopup();
     </script>
-    </div>
+
+
 
 </body>
 </html>
