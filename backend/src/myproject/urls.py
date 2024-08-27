@@ -12,5 +12,5 @@ urlpatterns = [
     path('properties/', views.properties, name='properties'),
     path('properties/<int:id>/', views.property, name='property'),
     path('add_property/', views.add_property, name='add_property'),
-    path('add_device/', views.add_device, name='add_device'),
+    path('properties/<int:id>/add_device/', views.add_device, name='add_device'),
 ]

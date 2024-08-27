@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from myapp.models import Property, Devices
+from myapp.models import Property, Device
 from django.http import HttpResponse
 from django.template import loader
 import json
@@ -13,15 +13,30 @@ COORD_PATTERN = r'^-?[\d]+\.[\d]+$'
 KEY_PATTERN = r'^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$'
 
 # Views ------------------------------------------------------------------------------------------------------
-@login_required(login_url='login')
-def add_device(request):
-    if request.method == 'POST':
-        type = request.POST.get('type')
-        name = request.POST.get('name')
-        key = request.POST.get('key')
 
-        print(f'{name}: {type} = {key}')
-    return render(request, 'add_device.html')
+# Device ->
+@login_required(login_url='login')
+def add_device(request, id: int):
+    property = get_object_or_404(Property, id=id)
+
+    if request.method == 'POST':
+        type: str = request.POST.get('type')
+        name: str = request.POST.get('name')
+        key: str = request.POST.get('key')
+
+        if not re.match(KEY_PATTERN, key):
+            return render(request, 'add_device.html', {'error': 'Invalid key code'})
+
+        device: Device = Device(
+            type=type,
+            name=name,
+            key=key,
+            property=property
+        )
+        device.save()
+        return redirect(f'/properties/{property.id}')
+
+    return render(request, 'add_device.html', {'property':property})
 
 # Properties ->
 @login_required(login_url='login')
@@ -97,7 +112,7 @@ def profile(request, username: str):
 def logout(request):
     auth_logout(request) #desloga o usuário
 
-    return redirect('login')
+    return redirect('home')
 
 # General/No login required --------------------------------------------------------------
 
