@@ -18,4 +18,4 @@ class Device(models.Model):
     key: models.CharField = models.CharField(max_length=17) # T3ST3-T3ST3-T3ST3
 
     def __str__(self) -> str:
-        return f'{self.name: {self.type}}'
+        return f'{self.name}: {self.type}'

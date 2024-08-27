@@ -46,7 +46,9 @@ def property(request, id: int):
     if property.user != request.user: # verify if this user has property
         return redirect('properties')
 
-    return render(request, 'property.html', {'property': property})
+    devices: list[Device] = Device.objects.filter(property=property)
+
+    return render(request, 'property.html', {'property': property, 'devices': devices})
 
 @login_required(login_url='login')
 def properties(request):
