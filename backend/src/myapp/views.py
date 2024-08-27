@@ -19,10 +19,14 @@ def add_device(request):
 
         print(f'{name}: {type} = {key}')
     return render(request, 'add_device.html')
+
 # Properties ->
 @login_required(login_url='login')
 def property(request, id: int):
     property: Property = get_object_or_404(Property, id= id)
+
+    if property.user != request.user: # verify if this user has property
+        return redirect('properties')
 
     return render(request, 'property.html', {'property': property})
 
