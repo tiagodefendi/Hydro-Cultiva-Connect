@@ -36,7 +36,7 @@ def add_device(request, id: int):
         device.save()
         return redirect(f'/properties/{property.id}')
 
-    return render(request, 'add_device.html', {'property':property})
+    return render(request, 'add_device.html', {'id':property.id})
 
 # Properties ->
 @login_required(login_url='login')
