@@ -97,6 +97,7 @@ def add_property(request):
             )
 
             property.save()
+            return redirect('properties')
         except:
             return render(request, 'add_property.html', {'error': 'Something wrong happened'})
 
