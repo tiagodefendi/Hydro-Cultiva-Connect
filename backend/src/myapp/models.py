@@ -11,7 +11,7 @@ class Property(models.Model):
     def __str__(self) -> str:
         return f'{self.name} ({self.latitude}, {self.longitude})'
 
-class Devices(models.Model):
+class Device(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='devices')
     type: models.CharField = models.CharField(max_length=100)
     name: models.CharField = models.CharField(max_length=100)
