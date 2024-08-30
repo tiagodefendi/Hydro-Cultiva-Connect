@@ -18,7 +18,7 @@
     <style>
         #map {
             height: 400px; /* Ajuste a altura conforme necessário */
-            margin-bottom: 20px;
+            margin-top: 20px; /* Espaço entre o mapa e o conteúdo acima */
         }
     </style>
 </head>
@@ -33,9 +33,6 @@
             {{ error }}
         </div>
     {% endif %}
-
-    <!-- Mapa -->
-    <div id="map"></div>
 
     <form method="POST" action="{% url 'add_property' %}">
         {% csrf_token %}
@@ -71,6 +68,9 @@
             <a class="btn btn-outline-danger" href="/">Cancel</a>
         </div>
     </form>
+
+    <!-- Mapa -->
+    <div id="map"></div>
 </div>
 
 <!-- Incluindo JavaScript do Bootstrap e Leaflet via CDN -->
@@ -78,8 +78,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Inicializa o mapa no centro de um ponto padrão (ex: [0, 0])
-    var map = L.map('map').setView([0, 0], 2);
+    // Inicializa o mapa
+    var map = L.map('map').setView([0, 0], 13);
 
     // Adiciona a camada base do OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -88,6 +88,32 @@
     }).addTo(map);
 
     var marker;
+
+    // Função para definir a localização do mapa com a localização do usuário
+    function setMapToUserLocation(lat, lng) {
+        map.setView([lat, lng], 13); // Ajuste o zoom conforme necessário
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    }
+
+    // Verifica se a geolocalização é suportada e obtém a posição do usuário
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            setMapToUserLocation(lat, lng);
+        }, function() {
+            // Se a geolocalização falhar, centraliza o mapa em um ponto padrão
+            setMapToUserLocation(0, 0);
+        });
+    } else {
+        // Se a geolocalização não for suportada, centraliza o mapa em um ponto padrão
+        setMapToUserLocation(0, 0);
+    }
 
     // Evento de clique no mapa
     map.on('click', function(e) {
