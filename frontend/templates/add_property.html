@@ -78,8 +78,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Inicializa o mapa
-    var map = L.map('map').setView([0, 0], 13);
+    // Inicializa o mapa com um zoom mais amplo
+    var map = L.map('map').setView([0, 0], 2); // Zoom alterado para 2
 
     // Adiciona a camada base do OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
