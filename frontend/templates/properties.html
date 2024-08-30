@@ -25,11 +25,35 @@
             height: 100vh; /* 100% da altura da janela */
             width: 100%;   /* 100% da largura */
         }
+        .add-property-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 50px; /* Ajuste para deixar o botão maior */
+            height: 50px; /* Ajuste para deixar o botão maior */
+            font-size: 24px;
+            line-height: 50px; /* Define a linha de altura igual à altura do botão */
+            text-align: center; /* Centraliza o texto horizontalmente */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            border: none;
+            z-index: 1000; /* Garante que o botão fique acima do mapa */
+            display: flex; /* Usa flexbox para centralização */
+            align-items: center; /* Alinha o conteúdo verticalmente */
+            justify-content: center; /* Alinha o conteúdo horizontalmente */
+        }
     </style>
 </head>
 
 <body>
+    <!-- Mapa -->
     <div id="map"></div>
+
+    <!-- Botão Adicionar Propriedade -->
+    <button class="add-property-btn" onclick="window.location.href='/add_property/'">+</button>
 
     <script>
         // Inicializa o mapa
