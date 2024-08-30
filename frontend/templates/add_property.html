@@ -87,40 +87,53 @@
         attribution: 'Hidro Cultiva Connect'
     }).addTo(map);
 
-    var marker;
+    var userMarker; // Para marcador da localização do usuário
+    var marker; // Para marcador da localização selecionada pelo usuário
 
-    // Função para definir a localização do mapa com a localização do usuário
-    function setMapToUserLocation(lat, lng) {
-        map.setView([lat, lng], 13); // Ajuste o zoom conforme necessário
-        if (marker) {
-            map.removeLayer(marker);
+    // Função para centralizar o mapa na localização do usuário
+    function setUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+
+                // Define o centro do mapa na localização do usuário
+                map.setView([lat, lng], 13);
+
+                // Adiciona um marcador na localização do usuário
+                if (userMarker) {
+                    map.removeLayer(userMarker);
+                }
+                userMarker = L.marker([lat, lng]).addTo(map);
+
+                // Atualiza os campos de latitude e longitude com as coordenadas do usuário
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lng;
+            }, function() {
+                // Caso a localização não esteja disponível, centraliza no centro do mapa padrão
+                map.setView([0, 0], 13);
+            });
+        } else {
+            // Caso a geolocalização não esteja disponível, centraliza no centro do mapa padrão
+            map.setView([0, 0], 13);
         }
-        marker = L.marker([lat, lng]).addTo(map);
-        document.getElementById('latitude').value = lat;
-        document.getElementById('longitude').value = lng;
     }
 
-    // Verifica se a geolocalização é suportada e obtém a posição do usuário
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            setMapToUserLocation(lat, lng);
-        }, function() {
-            // Se a geolocalização falhar, centraliza o mapa em um ponto padrão
-            setMapToUserLocation(0, 0);
-        });
-    } else {
-        // Se a geolocalização não for suportada, centraliza o mapa em um ponto padrão
-        setMapToUserLocation(0, 0);
-    }
+    // Chama a função para definir a localização do usuário quando a página é carregada
+    setUserLocation();
 
     // Evento de clique no mapa
     map.on('click', function(e) {
         var lat = e.latlng.lat;
         var lng = e.latlng.lng;
 
-        // Remove o marcador anterior, se houver
+        // Remove o marcador de localização do usuário se houver
+        if (userMarker) {
+            map.removeLayer(userMarker);
+            userMarker = null; // Limpa a variável para que não haja duplicação
+        }
+
+        // Remove o marcador anterior de seleção, se houver
         if (marker) {
             map.removeLayer(marker);
         }
