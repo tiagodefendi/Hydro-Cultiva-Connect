@@ -25,7 +25,7 @@ def add_device(request, id: int):
         key: str = request.POST.get('key')
 
         if not re.match(KEY_PATTERN, key):
-            return render(request, 'add_device.html', {'error': 'Invalid key code'})
+            return render(request, 'add_device.html', {'id':property.id, 'error': 'Invalid key code'})
 
         device: Device = Device(
             type=type,
