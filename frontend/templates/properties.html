@@ -59,43 +59,48 @@
         // Inicializa o mapa
         var map = L.map('map');
 
-        // Adiciona marcadores para cada propriedade
-        var properties = JSON.parse('{{ properties_json|escapejs }}');  // Converte o JSON para objeto JavaScript
-
-        // Calcular o centro do mapa
-        var latitudes = properties.map(property => property.latitude);
-        var longitudes = properties.map(property => property.longitude);
-        var centerLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
-        var centerLon = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
-
-        // Adicionar marcadores e calcular limites
-        var bounds = L.latLngBounds();
-        properties.forEach(function(property) {
-            L.marker([property.latitude, property.longitude], {
-                icon: L.icon({
-                    iconUrl: 'https://www.svgrepo.com/show/235481/greenhouse.svg', // URL do ícone do marcador
-                    iconSize: [32, 32], // Tamanho do ícone
-                    iconAnchor: [16, 32], // Ancoragem do ícone
-                    popupAnchor: [0, -32] // Âncora do popup
-                })
-            }).addTo(map)
-            .bindPopup(
-                '<b>' + property.name + '</b><br>' +
-                property.description + '<br>' +
-                '<a href="/properties/' + property.id + '">Ver detalhes</a>');
-
-            // Adiciona cada local ao limite
-            bounds.extend([property.latitude, property.longitude]);
-        });
-
-        // Define o centro e o zoom do mapa
-        map.fitBounds(bounds);
-
         // Adiciona a camada base
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: 'Hidro Cultiva Connect'
         }).addTo(map);
+
+        // Adiciona marcadores para cada propriedade
+        var properties = JSON.parse('{{ properties_json|escapejs }}');  // Converte o JSON para objeto JavaScript
+
+        if (properties.length > 0) {
+            // Calcular o centro do mapa
+            var latitudes = properties.map(property => property.latitude);
+            var longitudes = properties.map(property => property.longitude);
+            var centerLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
+            var centerLon = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
+
+            // Adicionar marcadores e calcular limites
+            var bounds = L.latLngBounds();
+            properties.forEach(function(property) {
+                L.marker([property.latitude, property.longitude], {
+                    icon: L.icon({
+                        iconUrl: 'https://www.svgrepo.com/show/235481/greenhouse.svg', // URL do ícone do marcador
+                        iconSize: [32, 32], // Tamanho do ícone
+                        iconAnchor: [16, 32], // Ancoragem do ícone
+                        popupAnchor: [0, -32] // Âncora do popup
+                    })
+                }).addTo(map)
+                .bindPopup(
+                    '<b>' + property.name + '</b><br>' +
+                    property.description + '<br>' +
+                    '<a href="/properties/' + property.id + '">Ver detalhes</a>');
+
+                // Adiciona cada local ao limite
+                bounds.extend([property.latitude, property.longitude]);
+            });
+
+            // Define o centro e o zoom do mapa
+            map.fitBounds(bounds);
+        } else {
+            // Se não houver propriedades, centraliza o mapa em uma localização padrão
+            map.setView([0, 0], 2); // Latitude e longitude padrão com um zoom padrão
+        }
     </script>
 
 </body>
