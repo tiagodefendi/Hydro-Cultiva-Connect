@@ -20,9 +20,9 @@ def add_device(request, id: int):
     property = get_object_or_404(Property, id=id)
 
     if request.method == 'POST':
-        type: str = request.POST.get('type')
-        name: str = request.POST.get('name')
-        key: str = request.POST.get('key')
+        type: str = request.POST.get('type').strip()
+        name: str = request.POST.get('name').strip()
+        key: str = request.POST.get('key').strip()
 
         if not re.match(KEY_PATTERN, key):
             return render(request, 'add_device.html', {'id':property.id, 'error': 'Invalid key code'})
@@ -71,10 +71,10 @@ def properties(request):
 @login_required(login_url='login')
 def add_property(request):
     if request.method == 'POST':
-        name: str = request.POST.get('name')
-        description: str = request.POST.get('description')
-        latitude: str = request.POST.get('latitude')
-        longitude: str = request.POST.get('longitude')
+        name: str = request.POST.get('name').strip()
+        description: str = request.POST.get('description').strip()
+        latitude: str = request.POST.get('latitude').strip()
+        longitude: str = request.POST.get('longitude').strip()
 
         print(f'{name} C({latitude}, {longitude}) - {description}')
 
@@ -122,27 +122,19 @@ def edit_profile(request, username: str):
             #saving new information
             if new_first_name and new_first_name != user.first_name:
                 user.first_name = new_first_name.strip()
-            # else:
-            #     user.first_name = request.user.first_name
 
             if new_last_name and new_last_name != user.last_name:
                 user.last_name = new_last_name.strip()
-            # else:
-            #     user.first_name = request.user.last_name
 
             if new_username and new_username != user.username:
                 if User.objects.filter(username=new_username.strip()).exists(): # verify if this username is already in use
                     return render(request, 'edit_profile.html', {'user': user, 'error': 'Username already in use'})
                 user.username = new_username.strip()
-            # else:
-            #     user.first_name = request.user.username
 
             if new_email and new_email != user.email:
                 if User.objects.filter(email=new_email.strip()).exists(): # verify if this email is already in use
                     return render(request, 'edit_profile.html', {'user': user, 'error': 'E-mail already in use'})
                 user.email = new_email.strip()
-            # else:
-            #     user.first_name = request.user.email
 
             user.save()
 
@@ -170,8 +162,8 @@ def logout(request):
 
 def login(request):
     if request.method == 'POST':
-        username: str = request.POST.get('username')
-        password: str = request.POST.get('password')
+        username: str = request.POST.get('username').strip()
+        password: str = request.POST.get('password').strip()
 
         try:
             user = authenticate(request, username=username, password=password)
@@ -190,12 +182,12 @@ def login(request):
 #TODO: verify SQL injections
 def signup(request):
     if request.method == 'POST': #getting forms information
-        first_name: str = request.POST.get('first_name')
-        last_name: str = request.POST.get('last_name')
-        username: str = request.POST.get('username')
-        email: str = request.POST.get('email')
-        password: str = request.POST.get('password')
-        confirm_password: str = request.POST.get('confirm_password')
+        first_name: str = request.POST.get('first_name').strip()
+        last_name: str = request.POST.get('last_name').strip()
+        username: str = request.POST.get('username').strip()
+        email: str = request.POST.get('email').strip()
+        password: str = request.POST.get('password').strip()
+        confirm_password: str = request.POST.get('confirm_password').strip()
 
         print(f"{first_name} {last_name} - {username}: {email} - {password}") # log request signup on terminal
 
