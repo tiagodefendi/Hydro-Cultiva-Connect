@@ -29,7 +29,14 @@
             {% csrf_token %}
             <div class="mb-3"> <!-- email -->
                 <label for="type">Type</label>
-                <input type="type" class="form-control" id="type" name="type" placeholder="Type this device type" required>
+                <select class="form-select" id="type" name="type" required>
+                    <option value="" disabled selected>Select device type</option>
+                    <option value="Sprinkler">Sprinkler</option>
+                    <option value="Tank">Tank</option>
+                    <option value="Thermometer">Thermometer</option>
+                    <option value="Hygrometer">Hygrometer</option>
+                    <option value="Camera">Camera</option>
+                </select>
             </div>
 
             <div class="mb-3"> <!-- name -->
