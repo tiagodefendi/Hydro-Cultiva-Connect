@@ -45,6 +45,20 @@
             align-items: center; /* Alinha o conteúdo verticalmente */
             justify-content: center; /* Alinha o conteúdo horizontalmente */
         }
+        .home-btn {
+            position: absolute;
+            bottom: 20px; /* Posicionado 20px do topo */
+            left: 20px; /* Posicionado 20px da esquerda */
+            background-color: #007bff; /* Cor verde para o botão Home */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            border: none;
+            z-index: 1000; /* Garante que o botão fique acima do mapa */
+        }
     </style>
 </head>
 
@@ -54,6 +68,9 @@
 
     <!-- Botão Adicionar Propriedade -->
     <button class="add-property-btn" onclick="window.location.href='/add_property/'">+</button>
+
+    <!-- Botão Voltar para Home -->
+    <button class="home-btn" onclick="window.location.href='/'">Back</button>
 
     <script>
         // Inicializa o mapa
