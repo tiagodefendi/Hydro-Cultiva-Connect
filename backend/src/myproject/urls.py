@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('profile/<str:username>/', views.profile, name='profile'),
     path('profile/<str:username>/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/<str:username>/delete_account', views.delete_account, name='delete_account'),
     # properties
     path('properties/', views.properties, name='properties'), # map
     path('properties/<int:id>/', views.property, name='property'),

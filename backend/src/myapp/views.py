@@ -145,6 +145,19 @@ def edit_profile(request, username: str):
     return render(request, 'edit_profile.html', {'user': user})
 
 @login_required(login_url='login')
+def delete_account(request, username: str):
+    user: User = get_object_or_404(User, username= username)
+    if request.user != user:
+        return redirect('profile', username=request.user.username)
+    
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        return redirect('home')
+
+    return render(request, 'delete_account.html', {'user': user})
+
+@login_required(login_url='login')
 def profile(request, username: str):
     user: User = get_object_or_404(User, username= username)
     if request.user != user:
@@ -192,6 +205,7 @@ def signup(request):
         print(f"{first_name} {last_name} - {username}: {email} - {password}") # log request signup on terminal
 
         if password == confirm_password: # verify if password is equal confirm_password and continue
+
             if User.objects.filter(username=username).exists(): # verify if this username is already in use
                     return render(request, 'signup.html', {'error': 'Username already in use'})
 
