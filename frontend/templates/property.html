@@ -77,8 +77,16 @@
                                             </div>
                                         </div>
 
-                                        <!-- Edit button for each device -->
+                                        <!-- Buttons for each device -->
                                         <div>
+                                            <!-- Conditional buttons based on device type -->
+                                            {% if device.type == "Sprinkler" %}
+                                            <a class="btn btn-sm btn-outline-success ms-2" href="">Turn On</a>
+                                            {% elif device.type == "Camera" %}
+                                            <a class="btn btn-sm btn-outline-info ms-2" href="">Live</a>
+                                            {% endif %}
+
+                                            <!-- Edit button -->
                                             <a class="btn btn-sm btn-outline-primary" href="">Edit</a>
                                         </div>
                                     </li>
