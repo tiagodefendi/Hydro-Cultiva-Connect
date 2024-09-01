@@ -9,8 +9,39 @@ import json
 
 # Regex -------------------------------------------------------------------------------------------------------
 import re
+
+# coordinates
 COORD_PATTERN = r'^-?[\d]+\.[\d]+$'
+
+# device's key
 KEY_PATTERN = r'^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$'
+
+# username
+USERNAME_PATTERN = r'^(?!_)[a-z0-9_]{3,20}(?<!_)$'
+'''
+Usernames only accepted
+- 3 to 20 characters
+- lowercase letters
+- numbers from 0 to 9
+- and underscore "_"
+'''
+
+# email
+EMAIL_PATTERN = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+'''
+address@domain.topleveldomain
+'''
+
+# password
+PASSWORD_PATTERN = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$'
+'''
+Password Requirements:
+- At least 6 characters long
+- Includes at least one lowercase letter (a-z)
+- Includes at least one uppercase letter (A-Z)
+- Includes at least one digit (0-9)
+- *Includes at least one special character (e.g., @, $, !, %, , ?, &)
+'''
 
 # Views ------------------------------------------------------------------------------------------------------
 
@@ -24,7 +55,7 @@ def add_device(request, id: int):
         name: str = request.POST.get('name').strip()
         key: str = request.POST.get('key').strip()
 
-        if not re.match(KEY_PATTERN, key):
+        if not re.fullmatch(KEY_PATTERN, key):
             return render(request, 'add_device.html', {'id':property.id, 'error': 'Invalid key code'})
 
         device: Device = Device(
@@ -78,11 +109,11 @@ def add_property(request):
 
         print(f'{name} C({latitude}, {longitude}) - {description}')
 
-        if re.match(COORD_PATTERN, latitude):
+        if re.fullmatch(COORD_PATTERN, latitude):
             latitude: float = float(latitude)
         else:
             return render(request, 'add_property.html', {'error': 'Invalid latitude coordinate'})
-        if re.match(COORD_PATTERN, longitude):
+        if re.fullmatch(COORD_PATTERN, longitude):
             longitude: float = float(longitude)
         else:
             return render(request, 'add_property.html', {'error': 'Invalid longitude coordinate'})
@@ -205,13 +236,25 @@ def signup(request):
         print(f"{first_name} {last_name} - {username}: {email} - {password}") # log request signup on terminal
 
         if password == confirm_password: # verify if password is equal confirm_password and continue
+            # username verify
+            if not re.fullmatch(USERNAME_PATTERN, username):
+                return render(request, 'signup.html', {'error': f'Invalid username'})
 
             if User.objects.filter(username=username).exists(): # verify if this username is already in use
-                    return render(request, 'signup.html', {'error': 'Username already in use'})
+                return render(request, 'signup.html', {'error': 'Username already in use'})
 
+            # email verify
+            if not re.fullmatch(EMAIL_PATTERN, email):
+                return render(request, 'signup.html', {'error': f'Invalid email'})
+            
             if User.objects.filter(email=email).exists(): # verify if this email is already in use
-                    return render(request, 'signup.html', {'error': 'E-mail already in use'})
+                return render(request, 'signup.html', {'error': 'E-mail already in use'})
+            
+            # password
+            if not re.fullmatch(PASSWORD_PATTERN, password):
+                return render(request, 'signup.html', {'error': f'Invalid password'})
 
+            # signup
             try:
                 user:User = User.objects.create_user( # create user object
                     first_name = first_name,
