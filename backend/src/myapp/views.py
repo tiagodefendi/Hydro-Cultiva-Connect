@@ -106,8 +106,57 @@ def add_property(request):
 
 # User ->
 @login_required(login_url='login')
+def edit_profile(request, username: str):
+    user: User = get_object_or_404(User, username=username)
+
+    if request.user != user:
+        return redirect('profile', username=request.user.username)
+
+    if request.method == 'POST':
+        new_first_name: str = request.POST.get('first_name')
+        new_last_name: str = request.POST.get('last_name')
+        new_username: str = request.POST.get('username')
+        new_email: str = request.POST.get('email')
+
+        try:
+            #saving new information
+            if new_first_name and new_first_name != user.first_name:
+                user.first_name = new_first_name.strip()
+            # else:
+            #     user.first_name = request.user.first_name
+
+            if new_last_name and new_last_name != user.last_name:
+                user.last_name = new_last_name.strip()
+            # else:
+            #     user.first_name = request.user.last_name
+
+            if new_username and new_username != user.username:
+                if User.objects.filter(username=new_username.strip()).exists(): # verify if this username is already in use
+                    return render(request, 'edit_profile.html', {'user': user, 'error': 'Username already in use'})
+                user.username = new_username.strip()
+            # else:
+            #     user.first_name = request.user.username
+
+            if new_email and new_email != user.email:
+                if User.objects.filter(email=new_email.strip()).exists(): # verify if this email is already in use
+                    return render(request, 'edit_profile.html', {'user': user, 'error': 'E-mail already in use'})
+                user.email = new_email.strip()
+            # else:
+            #     user.first_name = request.user.email
+
+            user.save()
+
+            return redirect('profile', username=user.username)
+        except:
+            return render(request, 'edit_profile.html', {'user': user, 'error': 'Something wrong happened'})
+
+    return render(request, 'edit_profile.html', {'user': user})
+
+@login_required(login_url='login')
 def profile(request, username: str):
     user: User = get_object_or_404(User, username= username)
+    if request.user != user:
+        return redirect('profile', username=request.user.username)
 
     return render(request, 'profile.html', {'user': user})
 
@@ -155,7 +204,7 @@ def signup(request):
                     return render(request, 'signup.html', {'error': 'Username already in use'})
 
             if User.objects.filter(email=email).exists(): # verify if this email is already in use
-                    return render(request, 'signup.html', {'error': 'E-mail already in useo'})
+                    return render(request, 'signup.html', {'error': 'E-mail already in use'})
 
             try:
                 user:User = User.objects.create_user( # create user object
