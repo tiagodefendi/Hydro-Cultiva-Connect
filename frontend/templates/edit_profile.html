@@ -40,12 +40,22 @@
 
             <div class="mb-3"> <!-- username -->
                 <label for="username">Username</label>
-                <input type="username" class="form-control" id="username" name="username" placeholder="New username">
+                <input type="username" class="form-control" id="username" name="username" placeholder="Type your username" required>
+                <div id="username_help" class="form-text user-select-none">
+                    Valid Username:
+                    3 to 20 characters,
+                    lowercase letters,
+                    numbers from 0 to 9,
+                    and underscore "_"
+                </div>
             </div>
 
             <div class="mb-3"> <!-- email -->
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="New email">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Type your email" required>
+                <div id="email_help" class="form-text user-select-none">
+                    Valid email: address@domain.topleveldomain
+                </div>
             </div>
 
 

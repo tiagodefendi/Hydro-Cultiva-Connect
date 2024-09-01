@@ -158,11 +158,16 @@ def edit_profile(request, username: str):
                 user.last_name = new_last_name.strip()
 
             if new_username and new_username != user.username:
+                if not re.fullmatch(USERNAME_PATTERN, new_username):
+                    return render(request, 'edit_profile.html', {'user': user, 'error': f'Invalid username'})
+            
                 if User.objects.filter(username=new_username.strip()).exists(): # verify if this username is already in use
                     return render(request, 'edit_profile.html', {'user': user, 'error': 'Username already in use'})
                 user.username = new_username.strip()
 
             if new_email and new_email != user.email:
+                if not re.fullmatch(EMAIL_PATTERN, new_email):
+                    return render(request, 'edit_profile.html', {'user': user, 'error': f'Invalid email'})
                 if User.objects.filter(email=new_email.strip()).exists(): # verify if this email is already in use
                     return render(request, 'edit_profile.html', {'user': user, 'error': 'E-mail already in use'})
                 user.email = new_email.strip()
