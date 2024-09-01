@@ -21,11 +21,11 @@
         </div>
     </nav>
 
-    <!-- Container Principal -->
+    <!-- Main Container -->
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <!-- Card de Detalhes da Propriedade -->
+                <!-- Property Details Card -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-light">
                         <h2><strong>Name:</strong> {{ property.name }}</h2>
@@ -41,38 +41,45 @@
                     </div>
                 </div>
 
-                <!-- Novo Container para Dispositivos -->
+                <!-- New Container for Devices -->
                 <div class="card mt-4 shadow-sm">
                     <div class="card-header bg-secondary text-light">
                         <h4>Devices</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Listar todos os dispositivos associados à propriedade -->
+                        <!-- List all devices associated with the property -->
                         {% if devices %}
                             <ul class="list-group list-group-flush">
                                 {% for device in devices %}
-                                    <li class="list-group-item d-flex align-items-center">
-                                        <!-- Image selection based on device type -->
-                                        <div class="me-3">
-                                            {% if device.type == "Sprinkler" %}
-                                                <img src="https://cdn-icons-png.flaticon.com/512/1322/1322526.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
-                                            {% elif device.type == "Tank" %}
-                                                <img src="https://cdn-icons-png.flaticon.com/512/6595/6595560.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
-                                            {% elif device.type == "Thermometer" %}
-                                                <img src="https://friconix.com/png/fi-xnluhx-thermometer-low.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
-                                            {% elif device.type == "Hygrometer" %}
-                                                <img src="https://cdn-icons-png.flaticon.com/512/6287/6287494.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
-                                            {% elif device.type == "Camera" %}
-                                                <img src="https://cdn-icons-png.flaticon.com/512/3874/3874201.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
-                                            {% else %}
-                                                <img src="https://webstockreview.net/images/r-clipart-rupee-logo-18.png" width="50" height="50" alt="Default image" class="rounded">
-                                            {% endif %}
+                                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Image selection based on device type -->
+                                            <div class="me-3">
+                                                {% if device.type == "Sprinkler" %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/1322/1322526.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                                {% elif device.type == "Tank" %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/6595/6595560.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                                {% elif device.type == "Thermometer" %}
+                                                    <img src="https://friconix.com/png/fi-xnluhx-thermometer-low.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                                {% elif device.type == "Hygrometer" %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/6287/6287494.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                                {% elif device.type == "Camera" %}
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3874/3874201.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                                {% else %}
+                                                    <img src="https://webstockreview.net/images/r-clipart-rupee-logo-18.png" width="50" height="50" alt="Default image" class="rounded">
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- Device information -->
+                                            <div>
+                                                <strong>{{ device.name }}</strong><br>
+                                                {{ device.type }}
+                                            </div>
                                         </div>
-                                        
-                                        <!-- Device information -->
+
+                                        <!-- Edit button for each device -->
                                         <div>
-                                            <strong>{{ device.name }}</strong><br>
-                                            {{ device.type }}
+                                            <a class="btn btn-sm btn-outline-primary" href="">Edit</a>
                                         </div>
                                     </li>
                                 {% endfor %}
@@ -89,7 +96,7 @@
         </div>
     </div>
 
-    <!-- Incluindo o JavaScript do Bootstrap via CDN -->
+    <!-- Bootstrap JavaScript via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
