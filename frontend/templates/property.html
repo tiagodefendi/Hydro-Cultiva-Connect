@@ -51,9 +51,29 @@
                         {% if devices %}
                             <ul class="list-group list-group-flush">
                                 {% for device in devices %}
-                                    <li class="list-group-item">
-                                        <strong>Device Name:</strong> {{ device.name }}<br>
-                                        <strong>Device Type:</strong> {{ device.type }}
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <!-- Image selection based on device type -->
+                                        <div class="me-3">
+                                            {% if device.type == "Sprinkler" %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1322/1322526.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                            {% elif device.type == "Tank" %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/6595/6595560.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                            {% elif device.type == "Thermometer" %}
+                                                <img src="https://friconix.com/png/fi-xnluhx-thermometer-low.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                            {% elif device.type == "Hygrometer" %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/6287/6287494.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                            {% elif device.type == "Camera" %}
+                                                <img src="https://cdn-icons-png.flaticon.com/512/3874/3874201.png" width="50" height="50" alt="{{ device.type }} image" class="rounded">
+                                            {% else %}
+                                                <img src="https://webstockreview.net/images/r-clipart-rupee-logo-18.png" width="50" height="50" alt="Default image" class="rounded">
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Device information -->
+                                        <div>
+                                            <strong>Device Type:</strong> {{ device.type }}<br>
+                                            <strong>Device Name:</strong> {{ device.name }}
+                                        </div>
                                     </li>
                                 {% endfor %}
                             </ul>
