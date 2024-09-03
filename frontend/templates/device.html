@@ -58,21 +58,26 @@
                     <div class="card-footer text-center">
                         <!-- Specific Buttons for Device Type -->
                         {% if device.type == "Sprinkler" %}
-                            <a class="btn btn-sm btn-outline-success ms-2" href="">Turn-on</a>
+                            <a class="btn btn-sm btn-outline-success ms-2" href="#">Turn-on</a>
                         {% elif device.type == "Tank" %}
-                            <a class="btn btn-sm btn-outline-info ms-2" href="">Check Water Level</a>
+                            <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
                         {% elif device.type == "Thermometer" %}
-                            <a class="btn btn-sm btn-outline-warning ms-2" href="">Check Temperature</a>
+                            <a class="btn btn-sm btn-outline-warning ms-2" href="#">Check Temperature</a>
                         {% elif device.type == "Hygrometer" %}
-                            <a class="btn btn-sm btn-outline-primary ms-2" href="">Check Humidity</a>
+                            <a class="btn btn-sm btn-outline-primary ms-2" href="#">Check Humidity</a>
                         {% elif device.type == "Camera" %}
-                            <a class="btn btn-sm btn-outline-dark ms-2" href="">Live</a>
+                            <a class="btn btn-sm btn-outline-dark ms-2" href="#">Live</a>
                         {% endif %}
 
                         <!-- General Buttons -->
                         <a class="btn btn-sm btn-outline-primary ms-2" href="edit/">Edit</a>
                         <a class="btn btn-sm btn-outline-secondary ms-2" href="/">Back</a>
                     </div>
+                </div>
+
+                <!-- Separate Delete Button -->
+                <div class="text-center mt-3">
+                    <a class="btn btn-sm btn-danger" href="delete/">Delete</a>
                 </div>
             </div>
         </div>

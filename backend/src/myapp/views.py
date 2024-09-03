@@ -50,11 +50,10 @@ Password Requirements:
 def delete_device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
     user: User = property.user
+    device: Device = get_object_or_404(Device, id=device_id)
 
     if user != request.user: # verify if this user has property
         return redirect('properties')
-
-    device: Device = get_object_or_404(Device, id=device_id)
 
     if request.method == 'POST':
         user = request.user
