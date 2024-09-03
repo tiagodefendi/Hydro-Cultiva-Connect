@@ -29,18 +29,18 @@
             {% csrf_token %}
 
             <div class="mb-3"> <!-- first name -->
-                <label for="first_name">Fist name</label>
-                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="New first name">
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="New first name" value="{{ user.first_name }}">
             </div>
 
             <div class="mb-3"> <!-- last name -->
-                <label for="last_name">Last name</label>
-                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="New last name">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="New last name" value="{{ user.last_name }}">
             </div>
 
             <div class="mb-3"> <!-- username -->
                 <label for="username">Username</label>
-                <input type="username" class="form-control" id="username" name="username" placeholder="Type your username" required>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Type your username" value="{{ user.username }}" required>
                 <div id="username_help" class="form-text user-select-none">
                     Valid Username:
                     3 to 20 characters,
@@ -52,15 +52,14 @@
 
             <div class="mb-3"> <!-- email -->
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Type your email" required>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Type your email" value="{{ user.email }}" required>
                 <div id="email_help" class="form-text user-select-none">
                     Valid email: address@domain.topleveldomain
                 </div>
             </div>
 
-
             <div class="mb-3"> <!-- buttons -->
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
                 <a class="btn btn-outline-danger" href="javascript:history.back()">Cancel</a>
             </div>
         </form>
