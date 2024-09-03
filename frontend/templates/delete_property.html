@@ -9,14 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <!-- Title -->
-    <title>Delete Device</title>
+    <title>Delete Property</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
 </head>
 
 <body>
     <div class="container mt-5">
-        <h2 class="text-center display-5 text-primary mb-4">Are you sure you want to delete {{ device.name }}?</h2>
-        <form method="POST" action="{% url 'delete_device' property_id=property.id device_id=device.id %}">
+        <h2 class="text-center display-5 text-primary mb-4">Are you sure you want to delete {{ property.name }}?</h2>
+        <form method="POST" action="{% url 'delete_property' property_id=property.id %}">
             {% csrf_token %}
 
             <div class="mb-3 text-center">

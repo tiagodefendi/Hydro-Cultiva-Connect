@@ -133,11 +133,17 @@ def add_device(request, id: int):
 @login_required(login_url='login')
 def delete_property(request, property_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
+    user: User = property.user
 
-    if property.user != request.user: # verify if this user has property
+    if user != request.user: # verify if this user has property
         return redirect('properties')
 
-    return render(request, 'property.html', {'property': property})
+    if request.method == 'POST':
+        user = request.user
+        property.delete()
+        return redirect('properties')
+
+    return render(request, 'delete_property.html', {'property': property})
 
 def edit_property(request, property_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -171,7 +177,7 @@ def edit_property(request, property_id: int):
                     new_longitude: float = float(new_longitude.strip())
                 else:
                     return render(request, 'edit_property.html', {'error': 'Invalid longitude coordinate'})
-                
+
                 property.longitude = new_longitude
 
             property.save()
