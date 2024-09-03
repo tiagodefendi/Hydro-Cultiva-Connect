@@ -65,13 +65,35 @@ def delete_device(request, property_id: int, device_id: int):
 @login_required(login_url='login')
 def edit_device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
-
-    if property.user != request.user: # verify if this user has property
-        return redirect('properties')
-
+    user: User = property.user
     device: Device = get_object_or_404(Device, id=device_id)
 
-    return render(request, 'device.html', {'property': property, 'device': device})
+    if user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    if request.method == 'POST':
+        new_type = request.POST.get('type')
+        new_name = request.POST.get('name')
+        new_key = request.POST.get('key')
+
+        try:
+            if new_type and new_type != device.type:
+                device.type = new_type.strip()
+
+            if new_name and new_name != device.name:
+                device.name = new_name.strip()
+
+            if new_key and new_key != device.key:
+                device.key = new_key.strip()
+
+            device.save()
+
+            return redirect(f'properties')
+
+        except Exception as e:
+            return render(request, 'edit_device.html', {'property': property, 'device': device, 'error': 'Something went wrong'})
+
+    return render(request, 'edit_device.html', {'property': property, 'device': device})
 
 @login_required(login_url='login')
 def device(request, property_id: int, device_id: int):
