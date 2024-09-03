@@ -14,8 +14,10 @@ urlpatterns = [
     path('profile/<str:username>/delete_account', views.delete_account, name='delete_account'),
     # properties
     path('properties/', views.properties, name='properties'), # map
-    path('properties/<int:property_id>/', views.property, name='property'),
     path('add_property/', views.add_property, name='add_property'),
+    path('properties/<int:property_id>/', views.property, name='property'),
+    path('properties/<int:property_id>/edit/', views.edit_property, name='edit_property'),
+    path('properties/<int:property_id>/delete/', views.delete_property, name='delete_property'),
     #devices
     path('properties/<int:id>/add_device/', views.add_device, name='add_device'),
     path('properties/<int:property_id>/device/<int:device_id>/', views.device, name='device'),

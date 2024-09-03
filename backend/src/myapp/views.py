@@ -131,6 +131,59 @@ def add_device(request, id: int):
 
 # Properties ->
 @login_required(login_url='login')
+def delete_property(request, property_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
+
+    if property.user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    return render(request, 'property.html', {'property': property})
+
+def edit_property(request, property_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
+
+    if property.user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    if request.method == 'POST':
+        new_name = request.POST.get('name')
+        new_description = request.POST.get('description')
+        new_latitude = request.POST.get('latitude')
+        new_longitude = request.POST.get('longitude')
+
+        try:
+            if new_name and new_name != property.name:
+                property.name = new_name.strip()
+
+            if new_description and new_description != property.description:
+                property.description = new_description.strip()
+
+            if new_latitude and new_latitude != property.latitude:
+                if re.fullmatch(COORD_PATTERN, new_latitude.strip()):
+                    new_latitude: float = float(new_latitude.strip())
+                else:
+                    return render(request, 'edit_property.html', {'error': 'Invalid latitude coordinate'})
+
+                property.latitude = new_latitude
+
+            if new_longitude and new_longitude != property.longitude:
+                if re.fullmatch(COORD_PATTERN, new_longitude.strip()):
+                    new_longitude: float = float(new_longitude.strip())
+                else:
+                    return render(request, 'edit_property.html', {'error': 'Invalid longitude coordinate'})
+                
+                property.longitude = new_longitude
+
+            property.save()
+
+            return redirect('properties')
+
+        except Exception as e:
+            return render(request, 'edit_property.html', {'property': property, 'error': 'Something went wrong'})
+
+    return render(request, 'edit_property.html', {'property': property})
+
+@login_required(login_url='login')
 def property(request, property_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
 
