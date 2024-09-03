@@ -15,10 +15,10 @@
 
 <body>
     <div class="container mt-5">
-        <h2 class="text-center display-5 text-primary mb-4">Tem certeza de que deseja excluir sua conta?</h2>
+        <h2 class="text-center display-5 text-primary mb-4">Are you sure you want to delete your account?</h2>
         <form method="POST" action="{% url 'delete_account' username=user.username %}">
             {% csrf_token %}
-    
+
             <div class="mb-3 text-center">
                 <a class="btn btn-primary" href="/">Cancel</a>
                 <button type="submit" class="btn btn-outline-danger">Delete</button>
