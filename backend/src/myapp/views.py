@@ -47,6 +47,45 @@ Password Requirements:
 
 # Device ->
 @login_required(login_url='login')
+def delete_device(request, property_id: int, device_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
+    user: User = property.user
+
+    if user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    device: Device = get_object_or_404(Device, id=device_id)
+
+    if request.method == 'POST':
+        user = request.user
+        device.delete()
+        return redirect('properties')
+
+    return render(request, 'delete_device.html', {'property': property, 'device': device})
+
+@login_required(login_url='login')
+def edit_device(request, property_id: int, device_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
+
+    if property.user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    device: Device = get_object_or_404(Device, id=device_id)
+
+    return render(request, 'device.html', {'property': property, 'device': device})
+
+@login_required(login_url='login')
+def device(request, property_id: int, device_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
+
+    if property.user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    device: Device = get_object_or_404(Device, id=device_id)
+
+    return render(request, 'device.html', {'property': property, 'device': device})
+
+@login_required(login_url='login')
 def add_device(request, id: int):
     property = get_object_or_404(Property, id=id)
 
@@ -71,8 +110,8 @@ def add_device(request, id: int):
 
 # Properties ->
 @login_required(login_url='login')
-def property(request, id: int):
-    property: Property = get_object_or_404(Property, id= id)
+def property(request, property_id: int):
+    property: Property = get_object_or_404(Property, id= property_id)
 
     if property.user != request.user: # verify if this user has property
         return redirect('properties')
@@ -160,7 +199,7 @@ def edit_profile(request, username: str):
             if new_username and new_username != user.username:
                 if not re.fullmatch(USERNAME_PATTERN, new_username):
                     return render(request, 'edit_profile.html', {'user': user, 'error': f'Invalid username'})
-            
+
                 if User.objects.filter(username=new_username.strip()).exists(): # verify if this username is already in use
                     return render(request, 'edit_profile.html', {'user': user, 'error': 'Username already in use'})
                 user.username = new_username.strip()
@@ -185,7 +224,7 @@ def delete_account(request, username: str):
     user: User = get_object_or_404(User, username= username)
     if request.user != user:
         return redirect('profile', username=request.user.username)
-    
+
     if request.method == 'POST':
         user = request.user
         user.delete()
@@ -251,10 +290,10 @@ def signup(request):
             # email verify
             if not re.fullmatch(EMAIL_PATTERN, email):
                 return render(request, 'signup.html', {'error': f'Invalid email'})
-            
+
             if User.objects.filter(email=email).exists(): # verify if this email is already in use
                 return render(request, 'signup.html', {'error': 'E-mail already in use'})
-            
+
             # password
             if not re.fullmatch(PASSWORD_PATTERN, password):
                 return render(request, 'signup.html', {'error': f'Invalid password'})
