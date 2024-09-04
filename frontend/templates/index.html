@@ -10,15 +10,41 @@
 
     <!-- Title -->
     <title>Hydro Cultiva Connect</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
 </head>
+
 <body>
+
+    <nav class="navbar bg-primary text-light">
+        <div class="container-fluid">
+
+            <div>
+                <a class="navbar-brand text-light" href="/">Hydro Cultiva Connect</a>
+            </div>
+
+            <div> <!-- buttons -->
+                <li class="nav-link d-flex">
+                    <a class="nav-link btn btn-light text-primary d-inline-block me-1" href="{% url 'profile' username=username %}">Profile</a>
+                    <a class="nav-link btn btn-outline-light d-inline-block text-light" href="logout">Logout</a>
+                </li>
+            </div>
+
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <!-- Título com Bootstrap -->
-        <h1 class="display-1 text-primary">Hidro Cultiva Connect</h1>
-        <p class="lead">Este é uma solução abrangente para gestão de irrigação e uso eficiente de água</p>
+        <h1 class="display-1 text-primary">Hydro Cultiva Connect</h1>
+        <p class="lead">This is a comprehensive solution for irrigation management and efficient water use</p>
+    </div>
+
+    <div class="container mt-5">
+        <a class="btn btn-primary text-light me-1" href="properties">Properties</a>
+        <a class="btn btn-primary text-light me-1" href="add_property">Add Property</a>
     </div>
 
     <!-- Incluindo o JavaScript do Bootstrap via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

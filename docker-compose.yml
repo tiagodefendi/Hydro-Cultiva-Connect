@@ -1,5 +1,3 @@
-version: '3.x'
-
 services:
   backend:
     build:
