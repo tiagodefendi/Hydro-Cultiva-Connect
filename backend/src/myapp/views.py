@@ -299,6 +299,11 @@ def edit_profile(request, username: str):
 
     return render(request, 'edit_profile.html', {'user': user})
 
+#TODO: change password
+@login_required(login_url='login')
+def change_password(request):
+    return render(request, 'change_password')
+
 @login_required(login_url='login')
 def delete_account(request, username: str):
     user: User = get_object_or_404(User, username= username)
@@ -327,6 +332,10 @@ def logout(request):
     return redirect('home')
 
 # General/No login required --------------------------------------------------------------
+
+#TODO: recover password
+def recover_password(request):
+    return render(request, 'recover_password')
 
 def login(request):
     if request.method == 'POST':
