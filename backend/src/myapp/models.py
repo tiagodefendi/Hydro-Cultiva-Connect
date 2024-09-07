@@ -17,7 +17,7 @@ class Device(models.Model):
     type: models.CharField = models.CharField(max_length=100)
     name: models.CharField = models.CharField(max_length=100)
     key: models.CharField = models.CharField(max_length=17) # T3ST3-T3ST3-T3ST3
-    status = models.CharField(max_length=50)  # Eg. 'on', 'off'
+    status = models.CharField(max_length=50, default='Off')  # Eg. 'on', 'off'
 
     def __str__(self) -> str:
         return f'{self.name}: {self.type} - {self.status}'

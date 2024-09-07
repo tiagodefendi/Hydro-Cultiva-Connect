@@ -29,6 +29,7 @@
                     buttonElement.classList.remove('btn-outline-success');
                     buttonElement.classList.add('btn-outline-danger');
                     buttonElement.setAttribute('onclick', `turnOffDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
                 } else if (data.error) {
                     console.error(data.error);
                 }
@@ -52,6 +53,7 @@
                     buttonElement.classList.remove('btn-outline-danger');
                     buttonElement.classList.add('btn-outline-success');
                     buttonElement.setAttribute('onclick', `turnOnDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
                 } else if (data.error) {
                     console.error(data.error);
                 }
