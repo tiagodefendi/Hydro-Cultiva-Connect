@@ -28,12 +28,19 @@
                 <!-- Property Details Card -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-light">
-                        <h2><strong>Name:</strong> {{ property.name }}</h2>
+                        <h2><strong>{{ property.name }}</strong></h2>
                     </div>
                     <div class="card-body">
-                        <p><strong>Description:</strong> {{ property.description }}</p>
-                        <p><strong>Latitude:</strong> {{ property.latitude }}</p>
-                        <p><strong>Longitude:</strong> {{ property.longitude }}</p>
+                        <p>{{ property.description }}</p>
+                        <div class="row">
+                            <div class="col-auto">
+                                <p><strong>Latitude:</strong> {{ property.latitude }}</p>
+                            </div>
+                            <div class="col-auto">
+                                <p><strong>Longitude:</strong> {{ property.longitude }}</p>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card-footer text-center">
                         <!-- Buttons for editing and deleting the property -->
@@ -83,9 +90,15 @@
                                         <div>
                                             <!-- Conditional buttons based on device type -->
                                             {% if device.type == "Sprinkler" %}
-                                            <a class="btn btn-sm btn-outline-success ms-2" href="">Turn-On</a>
+                                                <a class="btn btn-sm btn-outline-success ms-2" href="#">Turn-on</a>
+                                            {% elif device.type == "Tank" %}
+                                                <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
+                                            {% elif device.type == "Thermometer" %}
+                                                <a class="btn btn-sm btn-outline-warning ms-2" href="#">Check Temperature</a>
+                                            {% elif device.type == "Hygrometer" %}
+                                                <a class="btn btn-sm btn-outline-primary ms-2" href="#">Check Humidity</a>
                                             {% elif device.type == "Camera" %}
-                                            <a class="btn btn-sm btn-outline-info ms-2" href="">Live</a>
+                                                <a class="btn btn-sm btn-outline-dark ms-2" href="#">Live</a>
                                             {% endif %}
 
                                             <!-- Edit button -->

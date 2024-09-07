@@ -178,8 +178,8 @@ def edit_property(request, property_id: int):
             if new_name and new_name != property.name:
                 property.name = new_name.strip()
 
-            if new_description and new_description != property.description:
-                property.description = new_description.strip()
+            if new_description != property.description:
+                property.description = new_description
 
             if new_latitude and new_latitude != property.latitude:
                 if re.fullmatch(COORD_PATTERN, new_latitude.strip()):
