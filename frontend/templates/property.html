@@ -11,6 +11,69 @@
     <!-- Title -->
     <title>Property</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
+
+    <script>
+        function turnOnDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_on/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-off';
+                    buttonElement.classList.remove('btn-outline-success');
+                    buttonElement.classList.add('btn-outline-danger');
+                    buttonElement.setAttribute('onclick', `turnOffDevice('${deviceId}', this)`);
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function turnOffDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_off/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-on';
+                    buttonElement.classList.remove('btn-outline-danger');
+                    buttonElement.classList.add('btn-outline-success');
+                    buttonElement.setAttribute('onclick', `turnOnDevice('${deviceId}', this)`);
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </head>
 
 <body>
@@ -40,7 +103,6 @@
                                 <p><strong>Longitude:</strong> {{ property.longitude }}</p>
                             </div>
                         </div>
-
                     </div>
                     <div class="card-footer text-center">
                         <!-- Buttons for editing and deleting the property -->
@@ -82,7 +144,7 @@
                                             <!-- Device information -->
                                             <div>
                                                 <strong>{{ device.name }}</strong><br>
-                                                {{ device.type }}
+                                                {{ device.type }} - {{ device.status }}
                                             </div>
                                         </div>
 
@@ -90,7 +152,16 @@
                                         <div>
                                             <!-- Conditional buttons based on device type -->
                                             {% if device.type == "Sprinkler" %}
-                                                <a class="btn btn-sm btn-outline-success ms-2" href="#">Turn-on</a>
+                                                <button class="btn btn-sm ms-2 btn-outline-success"
+                                                    onclick="turnOnDevice('{{ device.id }}', this)"
+                                                    {% if device.status == 'On' %} style="display: none;" {% endif %}>
+                                                    Turn-on
+                                                </button>
+                                                <button class="btn btn-sm ms-2 btn-outline-danger"
+                                                    onclick="turnOffDevice('{{ device.id }}', this)"
+                                                    {% if device.status == 'Off' %} style="display: none;" {% endif %}>
+                                                    Turn-off
+                                                </button>
                                             {% elif device.type == "Tank" %}
                                                 <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
                                             {% elif device.type == "Thermometer" %}

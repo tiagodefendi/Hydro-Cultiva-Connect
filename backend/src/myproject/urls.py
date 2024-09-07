@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from myapp import views
 
 urlpatterns = [
@@ -29,4 +28,6 @@ urlpatterns = [
     path('properties/<int:property_id>/device/<int:device_id>/', views.device, name='device'),
     path('properties/<int:property_id>/device/<int:device_id>/edit/', views.edit_device, name='edit_device'),
     path('properties/<int:property_id>/device/<int:device_id>/delete/', views.delete_device, name='delete_device'),
+    #api for devices
+    path('api_device/', include('api_device.urls')),
 ]
