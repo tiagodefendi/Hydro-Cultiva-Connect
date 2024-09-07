@@ -62,6 +62,8 @@ def delete_device(request, property_id: int, device_id: int):
 
     return render(request, 'delete_device.html', {'property': property, 'device': device})
 
+#------------------------------------
+
 @login_required(login_url='login')
 def edit_device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -95,6 +97,8 @@ def edit_device(request, property_id: int, device_id: int):
 
     return render(request, 'edit_device.html', {'property': property, 'device': device})
 
+#------------------------------------
+
 @login_required(login_url='login')
 def device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -105,6 +109,8 @@ def device(request, property_id: int, device_id: int):
     device: Device = get_object_or_404(Device, id=device_id)
 
     return render(request, 'device.html', {'property': property, 'device': device})
+
+#------------------------------------
 
 @login_required(login_url='login')
 def add_device(request, id: int):
@@ -129,6 +135,8 @@ def add_device(request, id: int):
 
     return render(request, 'add_device.html', {'id':property.id})
 
+#------------------------------------
+
 # Properties ->
 @login_required(login_url='login')
 def delete_property(request, property_id: int):
@@ -144,6 +152,8 @@ def delete_property(request, property_id: int):
         return redirect('properties')
 
     return render(request, 'delete_property.html', {'property': property})
+
+#------------------------------------
 
 def edit_property(request, property_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -189,6 +199,8 @@ def edit_property(request, property_id: int):
 
     return render(request, 'edit_property.html', {'property': property})
 
+#------------------------------------
+
 @login_required(login_url='login')
 def property(request, property_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -199,6 +211,8 @@ def property(request, property_id: int):
     devices: list[Device] = Device.objects.filter(property=property)
 
     return render(request, 'property.html', {'property': property, 'devices': devices})
+
+#------------------------------------
 
 @login_required(login_url='login')
 def properties(request):
@@ -217,6 +231,8 @@ def properties(request):
     template = loader.get_template('properties.html')
     context = {'properties_json': properties_json}
     return HttpResponse(template.render(context, request))
+
+#------------------------------------
 
 @login_required(login_url='login')
 def add_property(request):
@@ -257,10 +273,13 @@ def add_property(request):
 # User ->
 @login_required(login_url='login')
 def edit_profile(request, username: str):
-    user: User = get_object_or_404(User, username=username)
+    try:
+        user: User = get_object_or_404(User, username=username)
+    except:
+        return redirect('edit_profile', username=request.user.username)
 
     if request.user != user:
-        return redirect('profile', username=request.user.username)
+        return redirect('edit_profile', username=request.user.username)
 
     if request.method == 'POST':
         new_first_name: str = request.POST.get('first_name')
@@ -299,9 +318,51 @@ def edit_profile(request, username: str):
 
     return render(request, 'edit_profile.html', {'user': user})
 
+#------------------------------------
+
+#TODO: change password
+@login_required(login_url='login')
+def change_password(request, username:str):
+    try:
+        user: User = get_object_or_404(User, username=username)
+    except:
+        return redirect('change_password', username=request.user.username)
+
+    if (request.user != user):
+        return redirect('change_password', username=request.user.username)
+    
+    if request.method == 'POST':
+        old_password: str = request.POST.get('old_password')
+        new_password: str = request.POST.get('new_password')
+        confirm_new_password: str = request.POST.get('confirm_new_password')
+
+        if not user.check_password(old_password):
+            return render(request, 'change_password.html', {'user': user, 'error': 'Incorrect current password'})
+        
+        if not re.fullmatch(PASSWORD_PATTERN, new_password):
+                return render(request, 'change_password.html', {'error': 'Invalid password'})
+        
+        if user.check_password(new_password):
+            return render(request, 'change_password.html', {'user': user, 'error': 'Use another password'})
+
+        if new_password != confirm_new_password:
+            return render(request, 'change_password.html', {'user': user, 'error': 'Passwords do not match'})
+        
+        user.set_password(new_password)
+        user.save()
+        return redirect('login')
+
+    return render(request, 'change_password.html', {'user': user})
+
+#------------------------------------
+
 @login_required(login_url='login')
 def delete_account(request, username: str):
-    user: User = get_object_or_404(User, username= username)
+    try:
+        user: User = get_object_or_404(User, username=username)
+    except:
+        return redirect('profile', username=request.user.username)
+
     if request.user != user:
         return redirect('profile', username=request.user.username)
 
@@ -312,13 +373,21 @@ def delete_account(request, username: str):
 
     return render(request, 'delete_account.html', {'user': user})
 
+#------------------------------------
+
 @login_required(login_url='login')
 def profile(request, username: str):
-    user: User = get_object_or_404(User, username= username)
+    try:
+        user: User = get_object_or_404(User, username=username)
+    except:
+        return redirect('profile', username=request.user.username)
+
     if request.user != user:
         return redirect('profile', username=request.user.username)
 
     return render(request, 'profile.html', {'user': user})
+
+#------------------------------------
 
 @login_required(login_url='login')
 def logout(request):
@@ -327,6 +396,10 @@ def logout(request):
     return redirect('home')
 
 # General/No login required --------------------------------------------------------------
+
+#TODO: recover password
+def recover_password(request):
+    return render(request, 'recover_password.html')
 
 def login(request):
     if request.method == 'POST':
@@ -346,6 +419,8 @@ def login(request):
 
 
     return render(request, 'login.html')
+
+#------------------------------------
 
 #TODO: verify SQL injections
 def signup(request):
@@ -398,6 +473,8 @@ def signup(request):
 
 
     return render(request, 'signup.html')
+
+#------------------------------------
 
 def home(request):
     if request.user.is_authenticated:
