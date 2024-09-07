@@ -1,11 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from myapp.models import Property, Device
 from django.http import HttpResponse
 from django.template import loader
 import json
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 # Regex -------------------------------------------------------------------------------------------------------
 import re
@@ -398,8 +405,74 @@ def logout(request):
 # General/No login required --------------------------------------------------------------
 
 #TODO: recover password
-def recover_password(request):
-    return render(request, 'recover_password.html')
+def password_reset_invalid(request):
+    return render(request, 'password_reset_invalid.html')
+
+def password_reset_complete(request):
+    return render(request, 'password_reset_complete.html')
+
+def password_reset_done(request):
+    return render(request, 'password_reset_done.html')
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_new_password')
+
+            if new_password and confirm_password:
+                if not re.fullmatch(PASSWORD_PATTERN, new_password):
+                    return render(request, 'password_reset_confirm.html', {'error': f'Invalid password', 'uid': uidb64, 'token': token})
+
+                if new_password == confirm_password:
+                    user.set_password(new_password)
+                    user.save()
+                    
+                    return redirect('password_reset_complete')
+                else:
+                    return render(request, 'password_reset_confirm.html', {'error': 'Passwords don\'t match', 'uid': uidb64, 'token': token})
+            else:
+                return render(request, 'password_reset_confirm.html', {'error': 'Both password fields are required', 'uid': uidb64, 'token': token})
+
+        return render(request, 'password_reset_confirm.html', {'uid': uidb64, 'token': token})
+    else:
+        return redirect('password_reset_invalid')
+
+def password_reset_request(request):
+    if request.method == 'POST':
+        user_verify: str = request.POST.get('user_verify').strip()
+
+        if re.fullmatch(USERNAME_PATTERN, user_verify):
+            user = User.objects.filter(username=user_verify).first()
+        elif re.fullmatch(EMAIL_PATTERN, user_verify):
+            user = User.objects.filter(email=user_verify).first()
+        else:
+            return render(request, 'password_reset_request.html', {'error': f'Invalid username or email'})
+
+        if user:
+            subject = "Password Reset Requested"
+            email_template_name = "password_reset_email.html"
+            context = {
+                "email": user.email,
+                'domain': get_current_site(request).domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": default_token_generator.make_token(user),
+                'protocol': 'http',
+            }
+            email_body = render_to_string(email_template_name, context)
+            send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+
+            return redirect('password_reset_done')
+    
+    return render(request, "password_reset_request.html")
+
+#------------------------------------
 
 def login(request):
     if request.method == 'POST':

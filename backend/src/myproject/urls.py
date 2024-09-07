@@ -9,11 +9,16 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
-    path('recover_password/', views.recover_password, name='recover_password'),
     path('profile/<str:username>/', views.profile, name='profile'),
     path('profile/<str:username>/edit/', views.edit_profile, name='edit_profile'),
     path('profile/<str:username>/change_password/', views.change_password, name='change_password'),
     path('profile/<str:username>/delete_account/', views.delete_account, name='delete_account'),
+    #   password reset
+    path('password_reset/', views.password_reset_request, name='password_reset'),
+    path('password_reset/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    path('password_reset/done/', views.password_reset_done, name='password_reset_done'),
+    path('password_reset/complete/', views.password_reset_complete, name='password_reset_complete'),
+    path('password_reset/invalid/', views.password_reset_invalid, name='password_reset_invalid'),
     # properties
     path('properties/', views.properties, name='properties'), # map
     path('add_property/', views.add_property, name='add_property'),
