@@ -28,8 +28,9 @@
             <div class="col-md-8">
                 <!-- Card de Perfil do Usuário -->
                 <div class="card">
-                    <div class="card-header text-center">
-                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                    <div class="card-header bg-primary text-light d-flex justify-content-between align-items-center">
+                        <h2 class="text-center mx-auto"><strong>{{ user.first_name }} {{ user.last_name }}</strong></h2>
+                        <a class="btn btn-sm btn-outline-light" href="edit/">Edit</a>
                     </div>
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -46,11 +47,11 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <a class="btn btn-primary" href="edit/">Edit</a>
                         <a class="btn btn-outline-secondary" href="/">Back</a>
+                        <a class="btn btn-outline-primary" href="change_password">Change Password</a>
                     </div>
                     <div class="card-footer text-center">
-                        <a class="btn btn-outline-secondary" href="change_password">Change Password</a>
+                        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
                         <a class="btn btn-outline-danger" href="delete_account">Delete Account</a>
                     </div>
                 </div>

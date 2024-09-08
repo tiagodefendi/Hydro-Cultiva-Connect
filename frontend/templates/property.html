@@ -176,8 +176,9 @@
             <div class="col-md-8">
                 <!-- Property Details Card -->
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-light">
-                        <h2><strong>{{ property.name }}</strong></h2>
+                    <div class="card-header bg-primary text-light d-flex justify-content-between align-items-center">
+                        <h2 class="text-center mx-auto"><strong>{{ property.name }}</strong></h2>
+                        <a class="btn btn-sm btn-outline-light" href="edit/">Edit</a>
                     </div>
                     <div class="card-body">
                         <p>{{ property.description }}</p>
@@ -192,9 +193,8 @@
                     </div>
                     <div class="card-footer text-center">
                         <!-- Buttons for editing and deleting the property -->
-                        <a class="btn btn-primary" href="edit/">Edit</a>
+                        <a class="btn btn-outline-secondary" href="/properties/">Back</a>
                         <a class="btn btn-outline-danger" href="delete/">Delete</a>
-                        <a class="btn btn-secondary" href="/">Back</a>
                     </div>
                 </div>
 
@@ -270,7 +270,7 @@
                                                 </button>
                                             {% endif %}
 
-                                            <a class="btn btn-sm btn-outline-primary ms-2" href="device/{{ device.id }}/">View</a>
+                                            <a class="btn btn-sm btn-primary ms-2" href="device/{{ device.id }}/">View</a>
                                         </div>
                                     </li>
                                 {% endfor %}

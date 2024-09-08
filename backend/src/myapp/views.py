@@ -342,7 +342,6 @@ def edit_profile(request, username: str):
 
 #------------------------------------
 
-#TODO: change password
 @login_required(login_url='login')
 def change_password(request, username:str):
     try:
@@ -419,7 +418,6 @@ def logout(request):
 
 # General/No login required --------------------------------------------------------------
 
-#TODO: recover password
 def password_reset_invalid(request):
     return render(request, 'password_reset_invalid.html')
 
