@@ -11,139 +11,110 @@
     <!-- Title -->
     <title>Device</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        function turnOnDevice(deviceId, buttonElement) {
-            fetch('/api_device/turn_on/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    buttonElement.innerText = 'Turn-off';
-                    buttonElement.classList.remove('btn-outline-success');
-                    buttonElement.classList.add('btn-outline-danger');
-                    buttonElement.setAttribute('onclick', `turnOffDevice('${deviceId}', this)`);
-                    window.location.reload();  // Recarrega a página
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const deviceId = '{{ device.id }}';
+            const deviceType = '{{ device.type }}';
+            const periodSelect = document.getElementById('periodSelect');
+            const ctx = document.getElementById('deviceChart').getContext('2d');
+            let chart = null;
 
-        function turnOffDevice(deviceId, buttonElement) {
-            fetch('/api_device/turn_off/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    buttonElement.innerText = 'Turn-on';
-                    buttonElement.classList.remove('btn-outline-danger');
-                    buttonElement.classList.add('btn-outline-success');
-                    buttonElement.setAttribute('onclick', `turnOnDevice('${deviceId}', this)`);
-                    window.location.reload();  // Recarrega a página
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+            function fetchDataAndUpdateChart(period) {
+                console.log(`Fetching data for period: ${period}`); // Depuração
+                document.getElementById('updateChartButton').disabled = true;
+                document.getElementById('updateChartButton').innerText = 'Loading...';
 
-        function checkWaterLevel(deviceId) {
-            fetch('/api_device/check_water/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    window.location.reload();  // Recarrega a página para atualizar o nível de água
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+                fetch('/api_device/status_in_period/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ id: deviceId, period: period, type: deviceType })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Data received:', data); // Depuração
+                    if (data.logs) {
+                        const labels = data.logs.map(log => new Date(log.interaction_date).toLocaleDateString());
+                        const statuses = data.logs.map(log => log.status);
 
-        function measureTemperature(deviceId, buttonElement) {
-            fetch('/api_device/measure_temperature/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    window.location.reload();
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+                        if (chart) {
+                            chart.destroy();
+                        }
 
-        function measureHumidity(deviceId, buttonElement) {
-            fetch('/api_device/measure_humidity/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    buttonElement.innerText = `Humidity: ${data.status}`;
-                    buttonElement.classList.add('btn-outline-success');
-                    window.location.reload();  // Recarrega a página para refletir a nova umidade
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+                        chart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Device Status',
+                                    data: statuses,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderWidth: 2,
+                                    tension: 0.1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return `Status: ${context.raw}`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Status'
+                                        },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('No logs found in data:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error))
+                .finally(() => {
+                    document.getElementById('updateChartButton').disabled = false;
+                    document.getElementById('updateChartButton').innerText = 'Update Chart';
+                });
+            }
 
-        function deviceLive(deviceId, propertyId) {
-            fetch('/api_device/live/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
-                },
-                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.live) {
-                    window.location.reload();
-                    // Redireciona para a URL do dispositivo ao vivo
-                    window.location.href = `/properties/${propertyId}/device/${deviceId}/live/${data.live}/`;
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+            // Fetch and display data on initial load
+            fetchDataAndUpdateChart(periodSelect.value);
+
+            // Fetch and display data when period is changed
+            periodSelect.addEventListener('change', function () {
+                fetchDataAndUpdateChart(this.value);
+            });
+
+            // Add event listener for update button
+            document.getElementById('updateChartButton').addEventListener('click', function() {
+                fetchDataAndUpdateChart(periodSelect.value);
+            });
+        });
 
         function getCookie(name) {
             let cookieValue = null;
@@ -244,6 +215,26 @@
                         <!-- General Buttons -->
                         <a class="btn btn-sm btn-outline-secondary ms-2" href="/properties/{{ property.id }}/">Back</a>
                         <a class="btn btn-sm btn-danger" href="delete/">Delete</a>
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <!-- Period Dropdown -->
+                        <div class="mb-3">
+                            <label for="periodSelect" class="form-label">Select Period:</label>
+                            <select id="periodSelect" class="form-select" aria-label="Select Period">
+                                <option value="day">Day</option>
+                                <option value="week">Week</option>
+                                <option value="month">Month</option>
+                                <option value="semester">Semester</option>
+                                <option value="year">Year</option>
+                            </select>
+                        </div>
+
+                        <!-- Chart Canvas -->
+                        <canvas id="deviceChart" width="400" height="200"></canvas>
+
+                        <!-- Update Button -->
+                        <button id="updateChartButton" class="btn btn-primary mt-3">Update Chart</button>
                     </div>
                 </div>
             </div>

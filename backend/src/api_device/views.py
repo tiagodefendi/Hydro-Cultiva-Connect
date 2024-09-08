@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from myapp.models import Device, DeviceLog
+from django.utils import timezone
 import json
 from datetime import datetime, timedelta
 import numpy as np
@@ -30,35 +31,44 @@ YOUTUBE_LIVE_LINKS = [
 def status_in_period(request):
     data = json.loads(request.body)
     device_id = data.get('id')
-    period = data.get('period')  # Novo parâmetro para o período
+    period = data.get('period')
+    device_type = data.get('type')
 
-    if not device_id or not period:
-        return JsonResponse({'error': 'Device ID and period are required'}, status=400)
+    if not device_id or not period or not device_type:
+        return JsonResponse({'error': 'Device ID, period, and type are required'}, status=400)
 
-    # Calcula o intervalo de tempo com base no período fornecido
-    now = datetime.now()
+    now = timezone.now()  # "aware" datetime
     if period == 'day':
         start_date = now - timedelta(days=1)
     elif period == 'week':
         start_date = now - timedelta(weeks=1)
     elif period == 'month':
-        start_date = now - timedelta(days=30)  # Aproximação para um mês
+        start_date = now - timedelta(days=30)
     elif period == 'semester':
-        start_date = now - timedelta(days=182)  # Aproximação para seis meses
+        start_date = now - timedelta(days=182)
     elif period == 'year':
         start_date = now - timedelta(days=365)
     else:
         return JsonResponse({'error': 'Invalid period specified'}, status=400)
 
-    # Filtra logs pelo dispositivo e intervalo de tempo
-    logs = DeviceLog.objects.filter(id=device_id, interaction_date__gte=start_date)
-    logs_list = [
-        {
-            'status': float(log.status[:-1]), # 80% -> 80
+    # start_date já é "aware" aqui, então não precisa chamar make_aware
+    logs = DeviceLog.objects.filter(device_id=device_id, interaction_date__gte=start_date)
+    logs_list = []
+
+    for log in logs:
+        if device_type == 'Sprinkler':
+            status = 1 if log.status == 'On' else 0
+        elif device_type in ['Tank', 'Hygrometer']:
+            status = float(log.status[:-1])  # '80%' -> 80
+        elif device_type == 'Thermometer':
+            status = float(log.status[:-2])  # '20°C' -> 20
+        else:
+            return JsonResponse({'error': 'Invalid device type specified'}, status=400)
+
+        logs_list.append({
+            'status': status,
             'interaction_date': log.interaction_date.isoformat()
-        }
-        for log in logs
-    ]
+        })
 
     return JsonResponse({'logs': logs_list})
 

@@ -351,7 +351,7 @@ def change_password(request, username:str):
 
     if (request.user != user):
         return redirect('change_password', username=request.user.username)
-    
+
     if request.method == 'POST':
         old_password: str = request.POST.get('old_password')
         new_password: str = request.POST.get('new_password')
@@ -359,16 +359,16 @@ def change_password(request, username:str):
 
         if not user.check_password(old_password):
             return render(request, 'change_password.html', {'user': user, 'error': 'Incorrect current password'})
-        
+
         if not re.fullmatch(PASSWORD_PATTERN, new_password):
                 return render(request, 'change_password.html', {'error': 'Invalid password'})
-        
+
         if user.check_password(new_password):
             return render(request, 'change_password.html', {'user': user, 'error': 'Use another password'})
 
         if new_password != confirm_new_password:
             return render(request, 'change_password.html', {'user': user, 'error': 'Passwords do not match'})
-        
+
         user.set_password(new_password)
         user.save()
         return redirect('login')
@@ -446,7 +446,7 @@ def password_reset_confirm(request, uidb64, token):
                 if new_password == confirm_password:
                     user.set_password(new_password)
                     user.save()
-                    
+
                     return redirect('password_reset_complete')
                 else:
                     return render(request, 'password_reset_confirm.html', {'error': 'Passwords don\'t match', 'uid': uidb64, 'token': token})
@@ -482,7 +482,7 @@ def password_reset_request(request):
             send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
 
             return redirect('password_reset_done')
-    
+
     return render(request, "password_reset_request.html")
 
 #------------------------------------
