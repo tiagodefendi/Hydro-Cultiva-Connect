@@ -1,12 +1,13 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
 from myapp.models import Device, DeviceLog
 from django.utils import timezone
 import json
 from datetime import datetime, timedelta
 import numpy as np
+
+# python manage.py qcluster
 
 # Lives ----------------------------------------------------------------------------
 
@@ -27,7 +28,6 @@ YOUTUBE_LIVE_LINKS = [
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def status_in_period(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -76,7 +76,6 @@ def status_in_period(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def turn_on_device(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -105,7 +104,6 @@ def turn_on_device(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def turn_off_device(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -132,7 +130,6 @@ def turn_off_device(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def check_water(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -165,7 +162,6 @@ def check_water(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def measure_temperature(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -198,7 +194,6 @@ def measure_temperature(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def measure_humidity(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -231,7 +226,6 @@ def measure_humidity(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def live(request):
     data = json.loads(request.body)
     device_id = data.get('id')
