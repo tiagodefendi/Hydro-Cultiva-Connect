@@ -18,7 +18,7 @@
     <style>
         #map {
             height: 400px; /* Ajuste a altura conforme necessário */
-            margin-top: 20px; /* Espaço entre o mapa e o conteúdo acima */
+            margin: 20px; /* Adiciona uma margem de 20px em todas as laterais */
         }
     </style>
 </head>
@@ -111,11 +111,11 @@
                 document.getElementById('longitude').value = lng;
             }, function() {
                 // Caso a localização não esteja disponível, centraliza no centro do mapa padrão
-                map.setView([0, 0], 13);
+                map.setView([0, 0], 2);
             });
         } else {
             // Caso a geolocalização não esteja disponível, centraliza no centro do mapa padrão
-            map.setView([0, 0], 13);
+            map.setView([0, 0], 2);
         }
     }
 
