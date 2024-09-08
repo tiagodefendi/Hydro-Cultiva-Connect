@@ -73,6 +73,16 @@
     <button class="home-btn" onclick="window.location.href='/'">Back</button>
 
     <script>
+        function truncateDescription(description, maxLength) {
+            if (description.length > maxLength) {
+                return description.substring(0, maxLength) + '...';
+            }
+            return description;
+        }
+
+        // Defina o comprimento máximo desejado para a descrição
+        const maxDescriptionLength = 100; // Altere conforme necessário
+
         // Inicializa o mapa
         var map = L.map('map');
 
@@ -103,10 +113,15 @@
                         popupAnchor: [0, -32] // Âncora do popup
                     })
                 }).addTo(map)
-                .bindPopup(
-                    '<b>' + property.name + '</b><br>' +
-                    property.description + '<br>' +
-                    '<a href="/properties/' + property.id + '">Ver detalhes</a>');
+                .bindPopup(`
+                    <div class="card" style="max-width: 200px; border: none;">
+                        <div class="card-body">
+                            <h5 class="card-title">${property.name}</h5>
+                            <p class="card-text">${truncateDescription(property.description, 100)}</p>
+                            <a href="/properties/${property.id}" class="btn btn-primary text-light">Abrir Propriedade</a>
+                        </div>
+                    </div>
+                `);
 
                 // Adiciona cada local ao limite
                 bounds.extend([property.latitude, property.longitude]);

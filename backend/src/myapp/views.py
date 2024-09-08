@@ -53,6 +53,21 @@ Password Requirements:
 # Views ------------------------------------------------------------------------------------------------------
 
 # Device ->
+
+@login_required(login_url='login')
+def device_live(request, property_id: int, device_id: int, link: str):
+    property: Property = get_object_or_404(Property, id= property_id)
+    user: User = property.user
+    device: Device = get_object_or_404(Device, id=device_id)
+
+    if user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    if device.type != 'Camera':
+        return redirect('properties')
+
+    return render(request, 'device_live.html', {'property': property, 'device': device, 'link':link})
+
 @login_required(login_url='login')
 def delete_device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
@@ -178,8 +193,8 @@ def edit_property(request, property_id: int):
             if new_name and new_name != property.name:
                 property.name = new_name.strip()
 
-            if new_description and new_description != property.description:
-                property.description = new_description.strip()
+            if new_description != property.description:
+                property.description = new_description
 
             if new_latitude and new_latitude != property.latitude:
                 if re.fullmatch(COORD_PATTERN, new_latitude.strip()):
