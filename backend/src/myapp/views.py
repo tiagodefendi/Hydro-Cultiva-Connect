@@ -80,7 +80,7 @@ def delete_device(request, property_id: int, device_id: int):
     if request.method == 'POST':
         user = request.user
         device.delete()
-        return redirect('properties')
+        return redirect(f'/properties/{property.id}/')
 
     return render(request, 'delete_device.html', {'property': property, 'device': device})
 
@@ -112,7 +112,7 @@ def edit_device(request, property_id: int, device_id: int):
 
             device.save()
 
-            return redirect(f'properties')
+            return redirect(f'/properties/{property.id}/device/{device.id}/')
 
         except Exception as e:
             return render(request, 'edit_device.html', {'property': property, 'device': device, 'error': 'Something went wrong'})
@@ -214,7 +214,7 @@ def edit_property(request, property_id: int):
 
             property.save()
 
-            return redirect('properties')
+            return redirect(f'/properties/{property.id}/')
 
         except Exception as e:
             return render(request, 'edit_property.html', {'property': property, 'error': 'Something went wrong'})
@@ -285,7 +285,7 @@ def add_property(request):
             )
 
             property.save()
-            return redirect('properties')
+            return redirect(f'/properties/{property.id}/')
         except:
             return render(request, 'add_property.html', {'error': 'Something wrong happened'})
 
