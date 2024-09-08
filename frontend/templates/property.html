@@ -61,6 +61,89 @@
             .catch(error => console.error('Error:', error));
         }
 
+        function checkWaterLevel(deviceId) {
+            fetch('/api_device/check_water/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();  // Recarrega a página para atualizar o nível de água
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureTemperature(deviceId, buttonElement) {
+            fetch('/api_device/measure_temperature/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureHumidity(deviceId, buttonElement) {
+            fetch('/api_device/measure_humidity/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = `Humidity: ${data.status}`;
+                    buttonElement.classList.add('btn-outline-success');
+                    window.location.reload();  // Recarrega a página para refletir a nova umidade
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function deviceLive(deviceId, propertyId) {
+            fetch('/api_device/live/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.live) {
+                    // Redireciona para a URL do dispositivo ao vivo
+                    window.location.href = `/properties/${propertyId}/device/${deviceId}/live/${data.live}/`;
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -165,17 +248,28 @@
                                                     Turn-off
                                                 </button>
                                             {% elif device.type == "Tank" %}
-                                                <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
+                                                <button class="btn btn-sm ms-2 btn-outline-primary"
+                                                    onclick="checkWaterLevel('{{ device.id }}')">
+                                                    Check Water Level
+                                                </button>
                                             {% elif device.type == "Thermometer" %}
-                                                <a class="btn btn-sm btn-outline-warning ms-2" href="#">Check Temperature</a>
+                                                <button class="btn btn-sm ms-2 btn-outline-warning"
+                                                    onclick="measureTemperature('{{ device.id }}', this)">
+                                                    Measure Temperature
+                                                </button>
                                             {% elif device.type == "Hygrometer" %}
-                                                <a class="btn btn-sm btn-outline-primary ms-2" href="#">Check Humidity</a>
+                                                <button class="btn btn-sm ms-2 btn-outline-info"
+                                                    onclick="measureHumidity('{{ device.id }}', this)">
+                                                    Measure Humidity
+                                                </button>
                                             {% elif device.type == "Camera" %}
-                                                <a class="btn btn-sm btn-outline-dark ms-2" href="#">Live</a>
+                                                <button class="btn btn-sm ms-2 btn-outline-danger"
+                                                    onclick="deviceLive('{{ device.id }}', '{{ property.id }}')">
+                                                    Go Live
+                                                </button>
                                             {% endif %}
 
-                                            <!-- Edit button -->
-                                            <a class="btn btn-sm btn-outline-primary" href="device/{{ device.id }}/">View</a>
+                                            <a class="btn btn-sm btn-outline-primary ms-2" href="device/{{ device.id }}/">View</a>
                                         </div>
                                     </li>
                                 {% endfor %}
@@ -184,15 +278,12 @@
                             <p>No devices found for this property.</p>
                         {% endif %}
                     </div>
-                    <div class="card-footer text-center">
-                        <a class="btn btn-primary" href="add_device/">Add Device</a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JavaScript via CDN -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-+sR34S56c3WXFsA/8TgMoU9h2Y2fEer5uVzjGkZC/A6ZsY0D7th7xw5dKR5h5eJ9" crossorigin="anonymous"></script>
 </body>
 </html>

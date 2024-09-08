@@ -53,6 +53,21 @@ Password Requirements:
 # Views ------------------------------------------------------------------------------------------------------
 
 # Device ->
+
+@login_required(login_url='login')
+def device_live(request, property_id: int, device_id: int, link: str):
+    property: Property = get_object_or_404(Property, id= property_id)
+    user: User = property.user
+    device: Device = get_object_or_404(Device, id=device_id)
+
+    if user != request.user: # verify if this user has property
+        return redirect('properties')
+
+    if device.type != 'Camera':
+        return redirect('properties')
+
+    return render(request, 'device_live.html', {'property': property, 'device': device, 'link':link})
+
 @login_required(login_url='login')
 def delete_device(request, property_id: int, device_id: int):
     property: Property = get_object_or_404(Property, id= property_id)
