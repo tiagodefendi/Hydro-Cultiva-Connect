@@ -9,8 +9,157 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <!-- Title -->
-    <title>Device Details</title>
+    <title>Device</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
+
+    <script>
+        function turnOnDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_on/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-off';
+                    buttonElement.classList.remove('btn-outline-success');
+                    buttonElement.classList.add('btn-outline-danger');
+                    buttonElement.setAttribute('onclick', `turnOffDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function turnOffDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_off/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-on';
+                    buttonElement.classList.remove('btn-outline-danger');
+                    buttonElement.classList.add('btn-outline-success');
+                    buttonElement.setAttribute('onclick', `turnOnDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function checkWaterLevel(deviceId) {
+            fetch('/api_device/check_water/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();  // Recarrega a página para atualizar o nível de água
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureTemperature(deviceId, buttonElement) {
+            fetch('/api_device/measure_temperature/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureHumidity(deviceId, buttonElement) {
+            fetch('/api_device/measure_humidity/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = `Humidity: ${data.status}`;
+                    buttonElement.classList.add('btn-outline-success');
+                    window.location.reload();  // Recarrega a página para refletir a nova umidade
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function deviceLive(deviceId, propertyId) {
+            fetch('/api_device/live/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.live) {
+                    window.location.reload();
+                    // Redireciona para a URL do dispositivo ao vivo
+                    window.location.href = `/properties/${propertyId}/device/${deviceId}/live/${data.live}/`;
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </head>
 
 <body>
@@ -56,17 +205,39 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <!-- Specific Buttons for Device Type -->
+                    <!-- Buttons for each device -->
+                        <!-- Conditional buttons based on device type -->
                         {% if device.type == "Sprinkler" %}
-                            <a class="btn btn-sm btn-outline-success ms-2" href="#">Turn-on</a>
+                            <button class="btn btn-sm ms-2 btn-outline-success"
+                                onclick="turnOnDevice('{{ device.id }}', this)"
+                                {% if device.status == 'On' %} style="display: none;" {% endif %}>
+                                Turn-on
+                            </button>
+                            <button class="btn btn-sm ms-2 btn-outline-danger"
+                                onclick="turnOffDevice('{{ device.id }}', this)"
+                                {% if device.status == 'Off' %} style="display: none;" {% endif %}>
+                                Turn-off
+                            </button>
                         {% elif device.type == "Tank" %}
-                            <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
+                            <button class="btn btn-sm ms-2 btn-outline-primary"
+                                onclick="checkWaterLevel('{{ device.id }}')">
+                                Check Water Level
+                            </button>
                         {% elif device.type == "Thermometer" %}
-                            <a class="btn btn-sm btn-outline-warning ms-2" href="#">Check Temperature</a>
+                            <button class="btn btn-sm ms-2 btn-outline-warning"
+                                onclick="measureTemperature('{{ device.id }}', this)">
+                                Measure Temperature
+                            </button>
                         {% elif device.type == "Hygrometer" %}
-                            <a class="btn btn-sm btn-outline-primary ms-2" href="#">Check Humidity</a>
+                            <button class="btn btn-sm ms-2 btn-outline-info"
+                                onclick="measureHumidity('{{ device.id }}', this)">
+                                Measure Humidity
+                            </button>
                         {% elif device.type == "Camera" %}
-                            <a class="btn btn-sm btn-outline-dark ms-2" href="#">Live</a>
+                            <button class="btn btn-sm ms-2 btn-outline-danger"
+                                onclick="deviceLive('{{ device.id }}', '{{ property.id }}')">
+                                Go Live
+                            </button>
                         {% endif %}
 
                         <!-- General Buttons -->
