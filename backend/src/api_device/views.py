@@ -10,7 +10,7 @@ import numpy as np
 # Lives ----------------------------------------------------------------------------
 
 YOUTUBE_LIVE_LINKS = [
-    'O0tTOcBrMTI&pp=ygUTbGl2ZSAyNCBocnMgZmFybWluZw%3D%3D',
+    'O0tTOcBrMTI',
     'Na0w3Mz46GA',
     'QKTNfEEeDnE',
     '4oStw0r33so',

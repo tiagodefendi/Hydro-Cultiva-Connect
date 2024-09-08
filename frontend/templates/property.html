@@ -135,6 +135,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.live) {
+                    window.location.reload();
                     // Redireciona para a URL do dispositivo ao vivo
                     window.location.href = `/properties/${propertyId}/device/${deviceId}/live/${data.live}/`;
                 } else if (data.error) {
@@ -198,7 +199,7 @@
                 </div>
 
                 <!-- New Container for Devices -->
-                <div class="card mt-4 shadow-sm">
+                <div class="card mt-4 shadow-sm mb-4">
                     <div class="card-header bg-secondary text-light">
                         <h4>Devices</h4>
                     </div>
@@ -277,6 +278,9 @@
                         {% else %}
                             <p>No devices found for this property.</p>
                         {% endif %}
+                    </div>
+                    <div class="card-footer text-center">
+                        <a class="btn btn-primary" href="add_device/">Add Device</a>
                     </div>
                 </div>
             </div>
