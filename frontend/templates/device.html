@@ -14,6 +14,13 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        /* Adiciona espaço abaixo do gráfico */
+        #deviceChart {
+            margin-bottom: 30px; /* Ajuste o valor conforme necessário */
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const deviceId = '{{ device.id }}';
@@ -142,7 +149,7 @@
     </nav>
 
     <!-- Main Container -->
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <!-- Device Details Card -->
