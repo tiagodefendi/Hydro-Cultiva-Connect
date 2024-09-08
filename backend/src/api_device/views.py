@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from myapp.models import Device, DeviceLog
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 
 # Lives ----------------------------------------------------------------------------
@@ -21,6 +21,46 @@ YOUTUBE_LIVE_LINKS = [
     'b_TW4NYsbOo',
     'yOuYY4AL_1U',
 ]
+
+# General --------------------------------------------------------------------------
+
+@csrf_exempt
+@require_POST
+@login_required(login_url='login')
+def status_in_period(request):
+    data = json.loads(request.body)
+    device_id = data.get('id')
+    period = data.get('period')  # Novo parâmetro para o período
+
+    if not device_id or not period:
+        return JsonResponse({'error': 'Device ID and period are required'}, status=400)
+
+    # Calcula o intervalo de tempo com base no período fornecido
+    now = datetime.now()
+    if period == 'day':
+        start_date = now - timedelta(days=1)
+    elif period == 'week':
+        start_date = now - timedelta(weeks=1)
+    elif period == 'month':
+        start_date = now - timedelta(days=30)  # Aproximação para um mês
+    elif period == 'semester':
+        start_date = now - timedelta(days=182)  # Aproximação para seis meses
+    elif period == 'year':
+        start_date = now - timedelta(days=365)
+    else:
+        return JsonResponse({'error': 'Invalid period specified'}, status=400)
+
+    # Filtra logs pelo dispositivo e intervalo de tempo
+    logs = DeviceLog.objects.filter(id=device_id, interaction_date__gte=start_date)
+    logs_list = [
+        {
+            'status': float(log.status[:-1]), # 80% -> 80
+            'interaction_date': log.interaction_date.isoformat()
+        }
+        for log in logs
+    ]
+
+    return JsonResponse({'logs': logs_list})
 
 # Sprinkler ------------------------------------------------------------------------
 
@@ -176,6 +216,8 @@ def measure_humidity(request):
             return JsonResponse({'error': 'Device is not a Hygrometer'}, status=400)
     except Device.DoesNotExist:
         return JsonResponse({'error': 'Device not found'}, status=404)
+
+# Camera -------------------------------------------------------------------------------
 
 @csrf_exempt
 @require_POST
