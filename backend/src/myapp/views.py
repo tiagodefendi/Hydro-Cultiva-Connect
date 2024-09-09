@@ -427,7 +427,7 @@ def profile(request, username: str):
 
 @login_required(login_url='login')
 def news(request):
-    query = 'agriculture irrigation'
+    query = 'agriculture OR irrigation OR farming OR crops OR "climate change" OR "extreme weather" OR "agricultural innovations" OR "cultivation techniques"'
     url = 'https://newsapi.org/v2/everything'
     params = {
         'q': query,
