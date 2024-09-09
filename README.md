@@ -82,21 +82,29 @@ Para poder usar o aplicativo, basta seguir as seguintes instruções
 
 1. Instale e configure o GIT
 
-2. Primeiro abra o terminal, e digite o seguinte comando para instalar o aplicativo
+2. Logo após, abra o terminal, e digite o seguinte comando para instalar o aplicativo
 
 ```bash
 git clone https://github.com/tiagodefendi/Hydro-Cultiva-Connect
 ```
 
-3. Com o repositório clonado com sucesso, abra a pasta com o terminal e execute o seguinte comando para iniciar o programa
+3. Com o repositório clonado com sucesso, adicione o arquivo ` .env ` na pasta ` ./backend/ ` e adicione as seguintes as chaves
+
+```python
+SENDGRID_API=SUA_CHAVE_SENDGRID_API
+SECRET_KEY=CHAVE_SECRETA_GERADA_PELO_DJANGO
+NEWS_API=SUA_CHAVE_NEWS_API
+```
+
+4. Assim, abra a pasta com o terminal e execute o seguinte comando para iniciar o programa
 
 ```bash
 docker-compose up --build
 ```
 
-4. Com isso o aplicativo está rodando, abra seu navegador e acesse o seguinte site http://localhost:8080, nele você poderá usar os recursos do software
+5. Com isso o aplicativo está rodando, abra seu navegador e acesse o seguinte site http://localhost:8080, nele você poderá usar os recursos do software
 
-5. Para encerrar a aplicação use o seguinte comando
+6. Para encerrar a aplicação use o seguinte comando
 
 ```bash
 docker-compose down
@@ -114,11 +122,11 @@ Tiago Defendi da Silva (Owner) -
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/tiago_defendi/)
 
 Artur Bento de Carvalho - 
-[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:arturbento@alunos.utfpr.edu.br)
+[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:hbdhjbvgi@gmail.com)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/arturbent0/)
 
 Thiago Riemma Carbonera - 
-[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:)
+[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:thiagoriemma@gmail.com)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/thiagoriemma/)
 
 João Ricardo Marques - 
