@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 load_dotenv(os.path.join(BASE_DIR, 'backend/.env'))
 SENDGRID_API: str = os.getenv('SENDGRID_API')
 SECRET_KEY:str = os.getenv('SECRET_KEY')
+NEWS_API: str = os.getenv('NEWS_API')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

@@ -10,14 +10,13 @@
 
     <!-- Title -->
     <title>Hydro Cultiva Connect</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
+    <link rel="icon" href="https://i.imgur.com/MMRLiEi.png" type="image/png">
 </head>
 
 <body>
 
     <nav class="navbar bg-primary text-light">
         <div class="container-fluid">
-
             <div>
                 <a class="navbar-brand text-light" href="/">Hydro Cultiva Connect</a>
             </div>
@@ -28,14 +27,29 @@
                     <a class="nav-link btn btn-outline-light d-inline-block text-light" href="/login/">Login</a>
                 </li>
             </div>
-
         </div>
     </nav>
 
     <div class="container mt-5">
-        <!-- Título com Bootstrap -->
         <h1 class="display-1 text-primary">Hydro Cultiva Connect</h1>
         <p class="lead">This is a comprehensive solution for irrigation management and efficient water use</p>
+    </div>
+
+    <div class="container mt-5">
+        <h2 class="text-primary">Agriculture & Irrigation News</h2>
+        <div id="news-section">
+            {% for article in articles %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h5>
+                        <p class="card-text">{{ article.description }}</p>
+                        <a href="{{ article.url }}" class="btn btn-primary" target="_blank">Read More</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No news found.</p>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Incluindo o JavaScript do Bootstrap via CDN -->

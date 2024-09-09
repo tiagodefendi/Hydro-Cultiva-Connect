@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
+from django.utils.html import strip_tags
+import requests
 
 # Regex -------------------------------------------------------------------------------------------------------
 import re
@@ -478,8 +480,18 @@ def password_reset_request(request):
                 "token": default_token_generator.make_token(user),
                 'protocol': 'http',
             }
-            email_body = render_to_string(email_template_name, context)
-            send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+
+            email_html_message = render_to_string(email_template_name, context)
+            email_plaintext_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject,
+                email_plaintext_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+                html_message=email_html_message
+            )
 
             return redirect('password_reset_done')
 
@@ -563,7 +575,18 @@ def signup(request):
 #------------------------------------
 
 def home(request):
+    query = 'agriculture irrigation'
+    url = 'https://newsapi.org/v2/everything'
+    params = {
+        'q': query,
+        'apiKey': settings.NEWS_API,
+        'language': 'en',
+        'sortBy': 'publishedAt'
+    }
+    response = requests.get(url, params=params)
+    news_data = response.json() if response.status_code == 200 else {'articles': []}
+
     if request.user.is_authenticated:
-        return render(request, 'index.html', {'username': request.user.username})
+        return render(request, 'index.html', {'articles': news_data.get('articles', []), 'username': request.user.username})
     else:
-        return render(request, 'index-nl.html')
+        return render(request, 'index-nl.html', {'articles': news_data.get('articles', [])})
