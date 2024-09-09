@@ -26,6 +26,25 @@ YOUTUBE_LIVE_LINKS = [
 
 # General --------------------------------------------------------------------------
 
+'''
+Decorator
+O Decorator é um padrão de projeto estrutural 
+que permite que você acople novos comportamentos para objetos 
+ao colocá-los dentro de invólucros de objetos que contém os comportamentos.
+
+Onde foi usado:
+
+@csrf_exempt: Desativa a verificação do token CSRF (Cross-Site Request Forgery) para a view onde é aplicado
+Normalmente, o Django valida esse token em formulários para proteger contra ataques CSRF,
+mas esse decorator pode ser usado para pular essa verificação em casos específicos, como em APIs que não precisam de CSRF
+
+@require_POST: Restringe o acesso a uma view para apenas requisições do tipo POST
+Se a view for acessada por qualquer outro método HTTP (como GET),
+Django retorna um erro "405 Method Not Allowed"
+Isso é útil quando você deseja garantir que a view só seja chamada por uma requisição POST, 
+ao enviar formulários ou dados via API
+'''
+
 @csrf_exempt
 @require_POST
 def status_in_period(request):
