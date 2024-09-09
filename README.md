@@ -82,21 +82,29 @@ Para poder usar o aplicativo, basta seguir as seguintes instruções
 
 1. Instale e configure o GIT
 
-2. Primeiro abra o terminal, e digite o seguinte comando para instalar o aplicativo
+2. Logo após, abra o terminal, e digite o seguinte comando para instalar o aplicativo
 
 ```bash
 git clone https://github.com/tiagodefendi/Hydro-Cultiva-Connect
 ```
 
-3. Com o repositório clonado com sucesso, abra a pasta com o terminal e execute o seguinte comando para iniciar o programa
+3. Com o repositório clonado com sucesso, adicione o arquivo ` .env ` na pasta ` ./backend/ ` e adicione as seguintes as chaves
+
+```python
+SENDGRID_API=SUA_CHAVE_SENDGRID_API
+SECRET_KEY=CHAVE_SECRETA_GERADA_PELO_DJANGO
+NEWS_API=SUA_CHAVE_NEWS_API
+```
+
+4. Assim, abra a pasta com o terminal e execute o seguinte comando para iniciar o programa
 
 ```bash
 docker-compose up --build
 ```
 
-4. Com isso o aplicativo está rodando, abra seu navegador e acesse o seguinte site http://localhost:8080, nele você poderá usar os recursos do software
+5. Com isso o aplicativo está rodando, abra seu navegador e acesse o seguinte site http://localhost:8080, nele você poderá usar os recursos do software
 
-5. Para encerrar a aplicação use o seguinte comando
+6. Para encerrar a aplicação use o seguinte comando
 
 ```bash
 docker-compose down
