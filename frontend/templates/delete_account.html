@@ -20,7 +20,7 @@
             {% csrf_token %}
 
             <div class="mb-3 text-center">
-                <a class="btn btn-primary" href="/">Cancel</a>
+                <a class="btn btn-primary" href="/profile/{{ user.username }}/">Cancel</a>
                 <button type="submit" class="btn btn-outline-danger">Delete</button>
             </div>
         </form>

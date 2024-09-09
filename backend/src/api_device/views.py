@@ -1,16 +1,18 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
 from myapp.models import Device, DeviceLog
+from django.utils import timezone
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
+
+# python manage.py qcluster
 
 # Lives ----------------------------------------------------------------------------
 
 YOUTUBE_LIVE_LINKS = [
-    'O0tTOcBrMTI&pp=ygUTbGl2ZSAyNCBocnMgZmFybWluZw%3D%3D',
+    'O0tTOcBrMTI',
     'Na0w3Mz46GA',
     'QKTNfEEeDnE',
     '4oStw0r33so',
@@ -22,11 +24,58 @@ YOUTUBE_LIVE_LINKS = [
     'yOuYY4AL_1U',
 ]
 
+# General --------------------------------------------------------------------------
+
+@csrf_exempt
+@require_POST
+def status_in_period(request):
+    data = json.loads(request.body)
+    device_id = data.get('id')
+    period = data.get('period')
+    device_type = data.get('type')
+
+    if not device_id or not period or not device_type:
+        return JsonResponse({'error': 'Device ID, period, and type are required'}, status=400)
+
+    now = timezone.now()  # "aware" datetime
+    if period == 'day':
+        start_date = now - timedelta(days=1)
+    elif period == 'week':
+        start_date = now - timedelta(weeks=1)
+    elif period == 'month':
+        start_date = now - timedelta(days=30)
+    elif period == 'semester':
+        start_date = now - timedelta(days=182)
+    elif period == 'year':
+        start_date = now - timedelta(days=365)
+    else:
+        return JsonResponse({'error': 'Invalid period specified'}, status=400)
+
+    # start_date já é "aware" aqui, então não precisa chamar make_aware
+    logs = DeviceLog.objects.filter(device_id=device_id, interaction_date__gte=start_date)
+    logs_list = []
+
+    for log in logs:
+        if device_type == 'Sprinkler':
+            status = 1 if log.status == 'On' else 0
+        elif device_type in ['Tank', 'Hygrometer']:
+            status = float(log.status[:-1])  # '80%' -> 80
+        elif device_type == 'Thermometer':
+            status = float(log.status[:-2])  # '20°C' -> 20
+        else:
+            return JsonResponse({'error': 'Invalid device type specified'}, status=400)
+
+        logs_list.append({
+            'status': status,
+            'interaction_date': log.interaction_date.isoformat()
+        })
+
+    return JsonResponse({'logs': logs_list})
+
 # Sprinkler ------------------------------------------------------------------------
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def turn_on_device(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -55,7 +104,6 @@ def turn_on_device(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def turn_off_device(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -82,7 +130,6 @@ def turn_off_device(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def check_water(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -115,7 +162,6 @@ def check_water(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def measure_temperature(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -148,7 +194,6 @@ def measure_temperature(request):
 
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def measure_humidity(request):
     data = json.loads(request.body)
     device_id = data.get('id')
@@ -177,9 +222,10 @@ def measure_humidity(request):
     except Device.DoesNotExist:
         return JsonResponse({'error': 'Device not found'}, status=404)
 
+# Camera -------------------------------------------------------------------------------
+
 @csrf_exempt
 @require_POST
-@login_required(login_url='login')
 def live(request):
     data = json.loads(request.body)
     device_id = data.get('id')

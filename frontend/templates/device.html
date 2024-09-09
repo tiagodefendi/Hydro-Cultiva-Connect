@@ -9,8 +9,267 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <!-- Title -->
-    <title>Device Details</title>
+    <title>Device</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1174/1174660.png" type="image/png">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Adiciona espaço abaixo do gráfico */
+        #deviceChart {
+            margin-bottom: 30px; /* Ajuste o valor conforme necessário */
+        }
+    </style>
+
+    <script>
+        function turnOnDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_on/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-off';
+                    buttonElement.classList.remove('btn-outline-success');
+                    buttonElement.classList.add('btn-outline-danger');
+                    buttonElement.setAttribute('onclick', `turnOffDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function turnOffDevice(deviceId, buttonElement) {
+            fetch('/api_device/turn_off/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = 'Turn-on';
+                    buttonElement.classList.remove('btn-outline-danger');
+                    buttonElement.classList.add('btn-outline-success');
+                    buttonElement.setAttribute('onclick', `turnOnDevice('${deviceId}', this)`);
+                    window.location.reload();  // Recarrega a página
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function checkWaterLevel(deviceId) {
+            fetch('/api_device/check_water/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();  // Recarrega a página para atualizar o nível de água
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureTemperature(deviceId, buttonElement) {
+            fetch('/api_device/measure_temperature/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    window.location.reload();
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function measureHumidity(deviceId, buttonElement) {
+            fetch('/api_device/measure_humidity/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buttonElement.innerText = `Humidity: ${data.status}`;
+                    buttonElement.classList.add('btn-outline-success');
+                    window.location.reload();  // Recarrega a página para refletir a nova umidade
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function deviceLive(deviceId, propertyId) {
+            fetch('/api_device/live/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Inclua o token CSRF se estiver usando proteção CSRF
+                },
+                body: JSON.stringify({ id: deviceId })  // Envia o ID do dispositivo no corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.live) {
+                    window.location.reload();
+                    // Redireciona para a URL do dispositivo ao vivo
+                    window.location.href = `/properties/${propertyId}/device/${deviceId}/live/${data.live}/`;
+                } else if (data.error) {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const deviceId = '{{ device.id }}';
+            const deviceType = '{{ device.type }}';
+            const periodSelect = document.getElementById('periodSelect');
+            const ctx = document.getElementById('deviceChart').getContext('2d');
+            let chart = null;
+
+            function fetchDataAndUpdateChart(period) {
+                console.log(`Fetching data for period: ${period}`); // Depuração
+                document.getElementById('updateChartButton').disabled = true;
+                document.getElementById('updateChartButton').innerText = 'Loading...';
+
+                fetch('/api_device/status_in_period/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ id: deviceId, period: period, type: deviceType })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Data received:', data); // Depuração
+                    if (data.logs) {
+                        const labels = data.logs.map(log => new Date(log.interaction_date).toLocaleDateString());
+                        const statuses = data.logs.map(log => log.status);
+
+                        if (chart) {
+                            chart.destroy();
+                        }
+
+                        chart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Device Status',
+                                    data: statuses,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderWidth: 2,
+                                    tension: 0.1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return `Status: ${context.raw}`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Status'
+                                        },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('No logs found in data:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error))
+                .finally(() => {
+                    document.getElementById('updateChartButton').disabled = false;
+                    document.getElementById('updateChartButton').innerText = 'Update Chart';
+                });
+            }
+
+            // Fetch and display data on initial load
+            fetchDataAndUpdateChart(periodSelect.value);
+
+            // Fetch and display data when period is changed
+            periodSelect.addEventListener('change', function () {
+                fetchDataAndUpdateChart(this.value);
+            });
+
+            // Add event listener for update button
+            document.getElementById('updateChartButton').addEventListener('click', function() {
+                fetchDataAndUpdateChart(periodSelect.value);
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </head>
 
 <body>
@@ -22,13 +281,14 @@
     </nav>
 
     <!-- Main Container -->
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <!-- Device Details Card -->
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-light">
-                        <h2 class="text-center"><strong>{{ device.name }}</strong></h2>
+                    <div class="card-header bg-primary text-light d-flex justify-content-between align-items-center">
+                        <h2 class="text-center mx-auto"><strong>{{ device.name }}</strong></h2>
+                        <a class="btn btn-sm btn-outline-light" href="edit/">Edit</a>
                     </div>
                     <div class="card-body d-flex align-items-center">
                         <!-- Image on the Left -->
@@ -56,28 +316,69 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <!-- Specific Buttons for Device Type -->
+                    <!-- Buttons for each device -->
+                        <!-- Conditional buttons based on device type -->
                         {% if device.type == "Sprinkler" %}
-                            <a class="btn btn-sm btn-outline-success ms-2" href="#">Turn-on</a>
+                            <button class="btn btn-sm ms-2 btn-outline-success"
+                                onclick="turnOnDevice('{{ device.id }}', this)"
+                                {% if device.status == 'On' %} style="display: none;" {% endif %}>
+                                Turn-on
+                            </button>
+                            <button class="btn btn-sm ms-2 btn-outline-danger"
+                                onclick="turnOffDevice('{{ device.id }}', this)"
+                                {% if device.status == 'Off' %} style="display: none;" {% endif %}>
+                                Turn-off
+                            </button>
                         {% elif device.type == "Tank" %}
-                            <a class="btn btn-sm btn-outline-info ms-2" href="#">Check Water Level</a>
+                            <button class="btn btn-sm ms-2 btn-outline-primary"
+                                onclick="checkWaterLevel('{{ device.id }}')">
+                                Check Water Level
+                            </button>
                         {% elif device.type == "Thermometer" %}
-                            <a class="btn btn-sm btn-outline-warning ms-2" href="#">Check Temperature</a>
+                            <button class="btn btn-sm ms-2 btn-outline-warning"
+                                onclick="measureTemperature('{{ device.id }}', this)">
+                                Measure Temperature
+                            </button>
                         {% elif device.type == "Hygrometer" %}
-                            <a class="btn btn-sm btn-outline-primary ms-2" href="#">Check Humidity</a>
+                            <button class="btn btn-sm ms-2 btn-outline-info"
+                                onclick="measureHumidity('{{ device.id }}', this)">
+                                Measure Humidity
+                            </button>
                         {% elif device.type == "Camera" %}
-                            <a class="btn btn-sm btn-outline-dark ms-2" href="#">Live</a>
+                            <button class="btn btn-sm ms-2 btn-outline-danger"
+                                onclick="deviceLive('{{ device.id }}', '{{ property.id }}')">
+                                Go Live
+                            </button>
                         {% endif %}
 
                         <!-- General Buttons -->
-                        <a class="btn btn-sm btn-outline-primary ms-2" href="edit/">Edit</a>
-                        <a class="btn btn-sm btn-outline-secondary ms-2" href="/">Back</a>
+                        <a class="btn btn-sm btn-outline-secondary ms-2" href="/properties/{{ property.id }}/">Back</a>
+                        <a class="btn btn-sm btn-danger" href="delete/">Delete</a>
                     </div>
-                </div>
 
-                <!-- Separate Delete Button -->
-                <div class="text-center mt-3">
-                    <a class="btn btn-sm btn-danger" href="delete/">Delete</a>
+                    {% if device.type != "Camera" %}
+
+                        <div class="card-footer text-center">
+                            <!-- Period Dropdown -->
+
+                            <div class="mb-3">
+                                <label for="periodSelect" class="form-label">Select Period:</label>
+                                <select id="periodSelect" class="form-select" aria-label="Select Period">
+                                    <option value="day">Day</option>
+                                    <option value="week">Week</option>
+                                    <option value="month">Month</option>
+                                    <option value="semester">Semester</option>
+                                    <option value="year">Year</option>
+                                </select>
+                            </div>
+                            <div>
+                                <!-- Chart Canvas -->
+                                <canvas id="deviceChart" width="400" height="200"></canvas>
+                                <!-- Update Button -->
+                                <button id="updateChartButton" class="btn btn-primary mt-3">Update Chart</button>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

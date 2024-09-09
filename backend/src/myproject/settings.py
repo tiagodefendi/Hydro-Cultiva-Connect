@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '0.0.0.0',
     '127.0.0.1',
+    'testserver',
 ]
 
 # Application definition
@@ -34,7 +35,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'myapp',
+    'django_q',
 ]
+
+Q_CLUSTER = {
+    'name': 'default',
+    'orm': 'default',  # Usa o Django ORM como broker
+    'timeout': 90,
+    'compress': True,
+    'ack_fail': True,
+    'max_attempts': 1,
+    'retry': 500,
+    'catch_up': False,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
