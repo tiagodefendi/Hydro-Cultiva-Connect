@@ -122,7 +122,7 @@ Tiago Defendi da Silva (Owner) -
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/tiago_defendi/)
 
 Artur Bento de Carvalho - 
-[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:arturbento@alunos.utfpr.edu.br)
+[![Gmail](https://img.shields.io/badge/Gmail-EA4335.svg?style=for-the-badge&logo=Gmail&logoColor=white)](https://mailto:hbdhjbvgi@gmail.com)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/arturbent0/)
 
 Thiago Riemma Carbonera - 
