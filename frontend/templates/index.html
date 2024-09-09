@@ -36,24 +36,22 @@
     </div>
 
     <div class="container mt-5">
+        <h2 class="display-6 text-primary">Your Properties</h2>
+        <p class="lead">
+            Here are all your properties
+        </p>
         <a class="btn btn-primary text-light me-1" href="{% url 'properties' %}">Properties</a>
         <a class="btn btn-primary text-light me-1" href="{% url 'add_property' %}">Add Property</a>
     </div>
 
-    <div class="container mt-5">
-        <h2 class="text-primary">Agriculture & Irrigation News</h2>
+    <div class="container mt-5 mb-3">
+        <h2 class="display-6 text-primary">Agriculture & Irrigation News</h2>
+        <p class="lead">
+            This is a news and articles section on agriculture and irrigation that brings updated content on innovations, 
+            techniques and good practices to optimize water use and increase efficiency in agricultural production
+        </p>
         <div id="news-section">
-            {% for article in articles %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h5>
-                        <p class="card-text">{{ article.description }}</p>
-                        <a href="{{ article.url }}" class="btn btn-primary" target="_blank">Read More</a>
-                    </div>
-                </div>
-            {% empty %}
-                <p>No news found.</p>
-            {% endfor %}
+            <a class="btn btn-primary text-light me-1" href="{% url 'news' %}">Read News</a>
         </div>
     </div>
 

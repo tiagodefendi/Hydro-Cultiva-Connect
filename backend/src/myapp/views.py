@@ -423,6 +423,23 @@ def profile(request, username: str):
 
     return render(request, 'profile.html', {'user': user})
 
+# News -------------------------------------------------------------------
+
+@login_required(login_url='login')
+def news(request):
+    query = 'agriculture OR irrigation OR farming OR crops OR "climate change" OR "extreme weather" OR "agricultural innovations" OR "cultivation techniques"'
+    url = 'https://newsapi.org/v2/everything'
+    params = {
+        'q': query,
+        'apiKey': settings.NEWS_API,
+        'language': 'en',
+        'sortBy': 'publishedAt'
+    }
+    response = requests.get(url, params=params)
+    news_data = response.json() if response.status_code == 200 else {'articles': []}
+
+    return render(request, 'news.html', {'articles': news_data.get('articles', [])})
+
 #------------------------------------
 
 @login_required(login_url='login')
@@ -533,7 +550,6 @@ def login(request):
 
 #------------------------------------
 
-#TODO: verify SQL injections
 def signup(request):
     if request.method == 'POST': #getting forms information
         first_name: str = request.POST.get('first_name').strip()
@@ -588,18 +604,7 @@ def signup(request):
 #------------------------------------
 
 def home(request):
-    query = 'agriculture irrigation'
-    url = 'https://newsapi.org/v2/everything'
-    params = {
-        'q': query,
-        'apiKey': settings.NEWS_API,
-        'language': 'en',
-        'sortBy': 'publishedAt'
-    }
-    response = requests.get(url, params=params)
-    news_data = response.json() if response.status_code == 200 else {'articles': []}
-
     if request.user.is_authenticated:
-        return render(request, 'index.html', {'articles': news_data.get('articles', []), 'username': request.user.username})
+        return render(request, 'index.html', {'username': request.user.username})
     else:
-        return render(request, 'index-nl.html', {'articles': news_data.get('articles', [])})
+        return render(request, 'index-nl.html')
