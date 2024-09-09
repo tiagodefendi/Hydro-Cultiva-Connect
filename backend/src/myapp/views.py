@@ -550,7 +550,6 @@ def login(request):
 
 #------------------------------------
 
-#TODO: verify SQL injections
 def signup(request):
     if request.method == 'POST': #getting forms information
         first_name: str = request.POST.get('first_name').strip()
