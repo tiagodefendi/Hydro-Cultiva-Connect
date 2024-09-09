@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
+from django.utils.html import strip_tags
 
 # Regex -------------------------------------------------------------------------------------------------------
 import re
@@ -478,8 +479,18 @@ def password_reset_request(request):
                 "token": default_token_generator.make_token(user),
                 'protocol': 'http',
             }
-            email_body = render_to_string(email_template_name, context)
-            send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+            
+            email_html_message = render_to_string(email_template_name, context)
+            email_plaintext_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject,
+                email_plaintext_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+                html_message=email_html_message
+            )
 
             return redirect('password_reset_done')
 
