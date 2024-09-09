@@ -56,6 +56,19 @@ Password Requirements:
 
 # Device ->
 
+'''
+Decorator
+O Decorator é um padrão de projeto estrutural 
+que permite que você acople novos comportamentos para objetos 
+ao colocá-los dentro de invólucros de objetos que contém os comportamentos.
+
+Onde foi usado:
+
+@login_required: em Django é usado para restringir o acesso a uma view apenas para usuários autenticados.
+login_url='login': Especifica a URL para a qual o usuário será redirecionado caso não esteja autenticado.
+Neste caso, ele será redirecionado para a página de login (/login/)
+'''
+
 @login_required(login_url='login')
 def device_live(request, property_id: int, device_id: int, link: str):
     property: Property = get_object_or_404(Property, id= property_id)
